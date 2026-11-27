@@ -108,6 +108,18 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 @media(max-width:850px){.admin-dashboard-layout{grid-template-columns:1fr}.admin-sidebar{position:static;display:flex;overflow-x:auto;padding:2px 0 8px}.admin-tab{width:auto;white-space:nowrap;flex:none}.admin-page-grid{grid-template-columns:1fr}}
 @media(max-width:560px){#adminPanel{padding:14px}.admin-overview-cards{grid-template-columns:1fr}.admin-page #siteFields{grid-template-columns:1fr}.admin-tab{padding:10px 12px}.admin-page-grid>.admin-form{padding:13px}}
 
+
+/* Mobile: collapse the sticky member navigation while scrolling */
+@media(max-width:560px){
+ .head.is-compact{display:flex;flex-direction:row;align-items:center;gap:0;padding:6px 8px;border-radius:999px;background:rgba(11,32,57,.96);box-shadow:0 8px 24px rgba(8,28,49,.24)}
+ .head.is-compact .brand{display:none}
+ .head.is-compact nav{display:flex;flex:1;width:100%;min-width:0;gap:6px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;padding:0}
+ .head.is-compact nav::-webkit-scrollbar{display:none}
+ .head.is-compact nav a{display:inline-flex;flex:0 0 auto;min-height:34px;padding:7px 12px;border:0;border-radius:999px;font-size:11px;white-space:nowrap}
+ .head.is-compact nav a.nav-admin{grid-column:auto}
+ header:has(.head.is-compact){top:5px;padding-bottom:5px}
+}
+
 </style>
 </head>
 <body>
@@ -395,6 +407,23 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
  panel.append(header);
  if(intro){intro.className='status good';intro.textContent='Админ эрх баталгаажлаа. Доорх цэснээс удирдах хэсгээ сонгоно уу.';panel.append(intro)}
  panel.append(layout);layout.append(sidebar,workspace);
+})();
+</script>
+
+
+<script>
+(function compactMobileMemberNav(){
+ const head=document.querySelector('header .head');
+ if(!head)return;
+ let queued=false;
+ const update=()=>{
+  queued=false;
+  if(window.innerWidth<=560)head.classList.toggle('is-compact',window.scrollY>90);
+  else head.classList.remove('is-compact');
+ };
+ window.addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update)}},{passive:true});
+ window.addEventListener('resize',update);
+ update();
 })();
 </script>
 
