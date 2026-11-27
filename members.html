@@ -133,6 +133,10 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 .report-file{display:inline-block;margin:5px 6px 0 0;font-size:12px;color:#174b7a;text-decoration:underline;overflow-wrap:anywhere}
 @media(max-width:560px){.chat-messages{height:55vh;min-height:260px;max-height:440px}.chat-compose{align-items:stretch}.chat-compose button{min-width:88px}.chat-message{max-width:94%}}
 
+.messenger-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.messenger-heading h2{margin:0}.messenger-heading p{margin:4px 0 12px}.messenger-online{font-size:11px;color:#21865a;background:#eaf6ef;border-radius:30px;padding:6px 10px}.messenger-tabs{display:flex;gap:7px;margin:8px 0 14px}.messenger-tabs button{border:1px solid var(--line);border-radius:999px;background:#edf2f7;color:var(--navy);padding:9px 16px;font-weight:700;cursor:pointer}.messenger-tabs button.active{background:var(--navy);color:white}.messenger-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:12px;min-height:420px}.messenger-people{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}.messenger-search{padding:10px;border-bottom:1px solid var(--line)}.messenger-search input{min-height:40px}.person-item{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:0;border-bottom:1px solid #edf1f5;background:#fff;text-align:left;cursor:pointer}.person-item:hover,.person-item.active{background:#edf3f8}.person-avatar{width:37px;height:37px;display:grid;place-items:center;flex:none;border-radius:50%;background:#dce8f2;color:var(--navy);font-weight:800}.person-copy{min-width:0}.person-copy b,.person-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.person-copy b{font-size:12px;color:var(--navy)}.person-copy small{font-size:10px;color:var(--muted)}.messenger-thread{min-width:0;display:flex;flex-direction:column}.thread-head{padding:10px 13px;border:1px solid var(--line);border-radius:12px 12px 0 0;background:#f7f9fc}.thread-head b,.thread-head small{display:block}.thread-head b{color:var(--navy);font-size:13px}.thread-head small{color:var(--muted);font-size:11px}.messenger-thread .chat-messages{flex:1;height:320px;border-radius:0 0 12px 12px}.messenger-thread .chat-compose{margin-top:9px}.messenger-thread .chat-compose textarea{min-width:0}.messenger-empty{padding:15px;color:var(--muted);font-size:12px}
+@media(max-width:700px){.messenger-layout{grid-template-columns:1fr;min-height:0}.messenger-people{max-height:190px;overflow:auto}.messenger-thread .chat-messages{height:42vh;min-height:240px;max-height:380px}.messenger-heading{align-items:flex-start}.messenger-online{white-space:nowrap}}
+
+
 .organization-card{border-top:1px solid var(--line);padding:14px 0}
 .organization-card h4{margin:0 0 5px;color:var(--navy)}
 .organization-card .org-meta{font-size:12px;color:var(--muted);margin-bottom:8px}
@@ -253,7 +257,7 @@ button{min-height:42px}
 </style>
 </head>
 <body>
-<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav><a href="./index.html">Нүүр хуудас</a><a href="./clubs-schools.html">Сургууль, клубийн булан</a><a href="#memberArea">Гишүүний хэсэг</a><a href="#pollArea">Санал асуулга</a><a href="#communityArea">Тайлан, чат</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
+<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav><a href="./index.html">Нүүр хуудас</a><a href="./clubs-schools.html">Сургууль, клубийн булан</a><a href="#memberArea">Гишүүний хэсэг</a><a href="#pollArea">Санал асуулга</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
 <main class="wrap">
 <div class="intro"><h1>Гишүүдийн булан</h1><p>Нэг дороос бүртгэлээ удирдаж, зарлал уншиж, санал асуулгад оролцож, арга хэмжээнд бүртгүүлнэ.</p></div>
 <div class="layout">
@@ -290,13 +294,22 @@ button{min-height:42px}
 
 
 <section class="box" id="memberChatArea">
- <h2>Гишүүдийн чат</h2>
- <p class="muted">Баталгаажсан гишүүд хоорондоо мэдээлэл, асуулт, зар мэдээ солилцох нээлттэй групп чат.</p>
- <div id="chatMessages" class="chat-messages"><div class="empty">Чат үзэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.</div></div>
- <form id="memberChatForm" class="chat-compose">
-  <textarea id="chatMessage" maxlength="2000" rows="2" placeholder="Мессежээ бичнэ үү…" required></textarea>
-  <button class="btn gold" id="chatSend">Илгээх</button>
- </form>
+ <div class="messenger-heading"><div><h2>Мессеж</h2><p class="muted">Гишүүдтэй группээр болон хувиараа харилцах хэсэг.</p></div><span class="messenger-online">● Гишүүдийн орчин</span></div>
+ <div class="messenger-tabs"><button type="button" class="active" id="groupChatTab">Групп чат</button><button type="button" id="directChatTab">Хувийн чат</button></div>
+ <div id="groupChatPane">
+  <div class="chat-messages" id="chatMessages"><div class="empty">Чат үзэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.</div></div>
+  <form id="memberChatForm" class="chat-compose"><textarea id="chatMessage" maxlength="2000" rows="2" placeholder="Группт мессеж бичих…" required></textarea><button class="btn gold" id="chatSend">Илгээх</button></form>
+ </div>
+ <div id="directChatPane" class="hidden">
+  <div class="messenger-layout">
+   <aside class="messenger-people"><div class="messenger-search"><input id="memberSearch" type="search" placeholder="Гишүүн хайх…"></div><div id="directPeople"><div class="empty">Гишүүд ачаалж байна.</div></div></aside>
+   <div class="messenger-thread">
+    <div class="thread-head" id="threadHead"><b>Хувийн чат</b><small>Ярилцах гишүүнээ сонгоно уу.</small></div>
+    <div id="directMessages" class="chat-messages"><div class="empty">Зүүн жагсаалтаас гишүүн сонгоно уу.</div></div>
+    <form id="directMessageForm" class="chat-compose"><textarea id="directMessage" maxlength="2000" rows="2" placeholder="Хувийн мессеж бичих…" required disabled></textarea><button class="btn gold" id="directSend" disabled>Илгээх</button></form>
+   </div>
+  </div>
+ </div>
  <div id="chatStatus" class="muted" aria-live="polite">Зөв харилцаж, бусдын хувийн мэдээллийг хамгаална уу.</div>
 </section>
 <section class="box hidden" id="adminPanel">
@@ -358,9 +371,12 @@ if(!approved){
  $("chatMessages").textContent="Баталгаажсан гишүүдийн чат.";
  $("memberReports").textContent="Баталгаажсан гишүүд тайлан илгээж, өөрийн тайлангаа харна.";
 }else{
- await Promise.all([loadMemberReports(),loadMemberChat()]);
+ await Promise.all([loadMemberReports(),loadMemberChat(),loadMemberDirectory()]);
  if(!chatChannel){
   chatChannel=db.channel("member-chat-live").on("postgres_changes",{event:"INSERT",schema:"public",table:"member_chat_messages"},()=>loadMemberChat()).subscribe();
+ }
+ if(!directChatChannel){
+  directChatChannel=db.channel("member-direct-live").on("postgres_changes",{event:"INSERT",schema:"public",table:"member_direct_messages"},()=>{loadMemberDirectory();if(selectedDirectMember)loadDirectMessages()}).subscribe();
  }
 }
 await Promise.all([loadAnnouncements(),loadPolls(),loadForms(),loadEvents()]);
@@ -447,6 +463,59 @@ async function loadMemberChat(){
  if(!data?.length)el.innerHTML='<div class="empty">Чат одоогоор хоосон байна. Эхний мессежийг та бичээрэй.</div>';
  el.scrollTop=el.scrollHeight;
 }
+let approvedMembers=[],selectedDirectMember=null,directChatChannel=null;
+async function loadMemberDirectory(){
+ const el=$("directPeople");if(!el||!user||profile?.membership_status!=="approved")return;
+ const {data,error}=await db.from("profiles").select("id,full_name,member_code").eq("membership_status","approved").order("full_name");
+ if(error){el.textContent="Гишүүдийн жагсаалт ачаалж чадсангүй: "+error.message;return}
+ approvedMembers=(data||[]).filter(p=>p.id!==user.id);renderMemberDirectory();
+}
+function renderMemberDirectory(){
+ const el=$("directPeople");if(!el)return;const term=($("memberSearch")?.value||"").trim().toLocaleLowerCase();
+ const rows=approvedMembers.filter(p=>((p.full_name||"")+" "+(p.member_code||"")).toLocaleLowerCase().includes(term));
+ el.innerHTML="";
+ for(const p of rows){
+  const b=document.createElement("button");b.type="button";b.className="person-item"+(selectedDirectMember?.id===p.id?" active":"");
+  const avatar=document.createElement("span");avatar.className="person-avatar";avatar.textContent=(p.full_name||"Г").trim().charAt(0).toLocaleUpperCase();
+  const copy=document.createElement("span");copy.className="person-copy";
+  const name=document.createElement("b");name.textContent=p.full_name||"Гишүүн";
+  const code=document.createElement("small");code.textContent=p.member_code||"Баталгаажсан гишүүн";
+  copy.append(name,code);b.append(avatar,copy);b.onclick=()=>openDirectChat(p);el.append(b);
+ }
+ if(!rows.length)el.innerHTML='<div class="messenger-empty">Тохирох гишүүн олдсонгүй.</div>';
+}
+async function openDirectChat(person){
+ selectedDirectMember=person;renderMemberDirectory();
+ $("threadHead").innerHTML="";const name=document.createElement("b");name.textContent=person.full_name||"Гишүүн";const code=document.createElement("small");code.textContent=person.member_code||"Хувийн харилцан яриа";$("threadHead").append(name,code);
+ $("directMessage").disabled=false;$("directSend").disabled=false;
+ await loadDirectMessages();
+}
+async function loadDirectMessages(){
+ const el=$("directMessages");if(!el||!selectedDirectMember||!user)return;
+ const other=selectedDirectMember.id;
+ const {data,error}=await db.from("member_direct_messages").select("id,sender_id,recipient_id,body,created_at").or("and(sender_id.eq."+user.id+",recipient_id.eq."+other+"),and(sender_id.eq."+other+",recipient_id.eq."+user.id+")").order("created_at",{ascending:true}).limit(250);
+ if(error){el.textContent="Хувийн чат ачаалж чадсангүй: "+error.message;return}
+ el.innerHTML="";
+ for(const m of data||[]){
+  const card=document.createElement("article");card.className="chat-message"+(m.sender_id===user.id?" mine":"");
+  const body=document.createElement("p");body.textContent=m.body;
+  const time=document.createElement("small");time.textContent=new Date(m.created_at).toLocaleString("mn-MN");
+  card.append(body,time);el.append(card);
+ }
+ if(!data?.length)el.innerHTML='<div class="empty">Энэ гишүүнтэй яриа эхлээгүй байна. Эхний мессежээ илгээгээрэй.</div>';
+ el.scrollTop=el.scrollHeight;
+}
+$("memberSearch").addEventListener("input",renderMemberDirectory);
+$("groupChatTab").onclick=()=>{$("groupChatTab").classList.add("active");$("directChatTab").classList.remove("active");$("groupChatPane").classList.remove("hidden");$("directChatPane").classList.add("hidden")};
+$("directChatTab").onclick=()=>{$("directChatTab").classList.add("active");$("groupChatTab").classList.remove("active");$("directChatPane").classList.remove("hidden");$("groupChatPane").classList.add("hidden");loadMemberDirectory()};
+$("directMessageForm").onsubmit=async e=>{
+ e.preventDefault();const body=$("directMessage").value.trim();if(!body||!selectedDirectMember||!user||profile?.membership_status!=="approved")return;
+ const btn=$("directSend");btn.disabled=true;
+ const {error}=await db.from("member_direct_messages").insert({sender_id:user.id,recipient_id:selectedDirectMember.id,body});
+ if(error)$("chatStatus").textContent="Хувийн мессеж илгээж чадсангүй: "+error.message;
+ else{$("directMessage").value="";$("chatStatus").textContent="Хувийн мессеж илгээгдлээ.";await loadDirectMessages();await loadMemberDirectory()}
+ btn.disabled=false;
+};
 $("memberReportForm").onsubmit=async e=>{
  e.preventDefault();if(!user||profile?.membership_status!=="approved"){ $("reportStatus").textContent="Тайлан илгээхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.";return}
  const btn=$("reportSubmit"),status=$("reportStatus"),files=[...$("reportFiles").files];btn.disabled=true;status.className="status";status.textContent="Файлуудыг байршуулж байна…";
