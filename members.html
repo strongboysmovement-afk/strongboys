@@ -184,6 +184,73 @@ button{min-height:42px}
 }
 
 </style>
+<style id="international-mobile-refresh">
+:root{--im-navy:#102b4e;--im-blue:#174b7a;--im-gold:#c5a45b;--im-ink:#243447;--im-muted:#64748b;--im-line:#e2e8f0;--im-paper:#f5f7fa}
+@media(max-width:760px){
+ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+ body{font-size:15px;line-height:1.65;color:var(--im-ink);background:#fff;overflow-x:hidden}
+ .wrap{width:min(100% - 32px,680px)!important;margin-inline:auto!important}
+ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97)!important;border-bottom:1px solid var(--im-line);box-shadow:0 3px 16px rgba(16,43,78,.06);backdrop-filter:blur(12px)}
+ header .head{min-height:68px!important;padding:10px 0!important;gap:12px!important}
+ .brand{gap:10px!important;min-width:0}
+ .brand img,.brand .mark{width:42px!important;height:42px!important;object-fit:contain}
+ .brand b{font-size:13px!important;letter-spacing:.045em}
+ .brand small{font-size:9px!important;line-height:1.35}
+ nav#nav{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;padding:12px 20px 18px!important;border-bottom:1px solid var(--im-line);box-shadow:0 12px 22px rgba(16,43,78,.1);flex-direction:column!important;align-items:stretch!important;gap:3px!important}
+ nav#nav.open{display:flex!important}
+ nav#nav a{display:flex;align-items:center;min-height:46px;padding:10px 12px!important;border-radius:8px;font-size:14px!important}
+ #menu{display:inline-flex!important;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid var(--im-line);border-radius:8px;background:#fff;color:var(--im-navy);font-size:22px}
+ main section{padding:48px 0!important}
+ .section-head{margin-bottom:24px!important}
+ h1{font-size:clamp(30px,8vw,42px)!important;line-height:1.14!important;letter-spacing:-.035em}
+ h2{font-size:clamp(23px,6vw,30px)!important;line-height:1.22!important;letter-spacing:-.025em}
+ h3{font-size:18px!important;line-height:1.35!important}
+ p{font-size:14px;line-height:1.75}
+ .hero{padding:54px 0 48px!important;min-height:0!important}
+ .hero .wrap{display:block!important}
+ .hero p{max-width:42rem}
+ .hero .actions,.hero .buttons{display:flex;flex-wrap:wrap;gap:10px!important}
+ .btn,button,.button{min-height:44px;max-width:100%;border-radius:7px!important;font-size:14px!important;padding:11px 16px!important}
+ .cards,.activities,.news-grid,.stats,.about-grid,.foot,.layout{grid-template-columns:1fr!important;display:grid!important;gap:14px!important}
+ .card,.activity,.news-card,.quote,.box,.panel,.orgcard,.submission,.admin-page,.admin-form{border-radius:10px!important;box-shadow:0 4px 18px rgba(16,43,78,.055)!important}
+ .card,.activity,.news-body,.box,.panel,.orgcard,.submission{padding:18px!important}
+ .news-art{min-height:120px}
+ .cta .wrap{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:18px!important}
+ input,select,textarea{width:100%;min-height:46px;max-width:100%;font-size:16px!important;border:1px solid #cbd5e1!important;border-radius:7px!important;padding:11px 12px!important;background:#fff}
+ textarea{min-height:120px}
+ label{display:block;margin:12px 0 6px;font-size:13px;font-weight:650;color:#334155}
+ form{min-width:0}
+ .row,.actions{display:flex;flex-wrap:wrap;gap:8px!important}
+ .row>*{min-width:0}
+ .table-wrap,.table-responsive{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+ table{min-width:560px}
+ footer{padding:34px 0 20px!important}
+ .foot{gap:26px!important}
+ .copyright{font-size:12px;line-height:1.6}
+ .admin-dashboard-head{display:block!important}
+ .admin-overview-cards{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+ .admin-dashboard-layout{display:block!important}
+ .admin-sidebar{display:flex!important;gap:7px!important;overflow-x:auto!important;padding:4px 0 12px!important;margin-bottom:14px!important;scroll-snap-type:x proximity}
+ .admin-tab{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;min-height:42px}
+ .admin-workspace{min-width:0!important}
+ .admin-page-grid{display:grid!important;grid-template-columns:1fr!important;gap:12px!important}
+ .admin-page-grid>*{min-width:0;max-width:100%}
+ .status{overflow-wrap:anywhere}
+ img,video,iframe{max-width:100%}
+}
+@media(max-width:420px){
+ .wrap{width:calc(100% - 26px)!important}
+ header .head{min-height:62px!important}
+ .brand img,.brand .mark{width:37px!important;height:37px!important}
+ .brand b{font-size:12px!important}
+ .brand small{font-size:8px!important}
+ main section{padding:40px 0!important}
+ .hero{padding:46px 0 40px!important}
+ .btn,button,.button{width:100%}
+ .row .btn,.actions .btn{width:auto;flex:1 1 130px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
 <header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav><a href="./index.html">Нүүр хуудас</a><a href="./clubs-schools.html">Сургууль, клубийн булан</a><a href="#memberArea">Гишүүний хэсэг</a><a href="#pollArea">Санал асуулга</a><a href="#communityArea">Тайлан, чат</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
