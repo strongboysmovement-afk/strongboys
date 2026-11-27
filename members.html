@@ -49,6 +49,7 @@
 <form id="postForm" class="admin-form"><h3>Нүүр хуудсанд мэдээ нийтлэх</h3><label>Гарчиг</label><input id="postTitle" required maxlength="160"><label>Товч тайлбар</label><textarea id="postSummary" maxlength="500"></textarea><label>Мэдээний агуулга</label><textarea id="postBody" required></textarea><label>Ангилал</label><select id="postCategory"><option>Мэдээ</option><option>Сургалт</option><option>Үйл ажиллагаа</option><option>Зарлал</option></select><label>Зурагны URL (заавал биш)</label><input id="postImage" type="url" placeholder="https://..."><label>Эсвэл төхөөрөмжөөс зураг оруулах</label><input id="postImageFile" type="file" accept="image/png,image/jpeg,image/webp"><button class="btn gold" style="margin-top:12px">Нийтлэх</button></form>
 <div class="admin-form"><h3>Нийтэлсэн мэдээ засах, устгах</h3><div id="adminPostList" class="empty">Мэдээ ачаалж байна.</div></div>
 <form id="announcementForm" class="admin-form"><h3>Гишүүдэд зарлал хүргэх</h3><label>Гарчиг</label><input id="announcementTitle" required maxlength="160"><label>Мэдээлэл</label><textarea id="announcementBody" required></textarea><button class="btn gold" style="margin-top:12px">Зарлал нийтлэх</button></form>
+<div class="admin-form"><h3>Нийтэлсэн зарлал удирдах</h3><p class="muted">Эндээс гишүүдэд хүргэсэн зарлалыг устгаж болно.</p><div id="adminAnnouncementList" class="empty">Зарлал ачаалж байна.</div></div>
 <form id="pollForm" class="admin-form"><h3>Санал асуулга үүсгэх</h3><label>Асуулт</label><input id="pollTitle" required maxlength="240"><label>Тайлбар (заавал биш)</label><textarea id="pollDescription"></textarea><label>Сонголтууд (мөр бүрт нэг)</label><textarea id="pollOptions" required placeholder="Тийм&#10;Үгүй&#10;Мэдэхгүй"></textarea><button class="btn gold" style="margin-top:12px">Нийтлэх</button></form>
 </div>
 <div>
@@ -81,9 +82,33 @@ $("profileStatus").innerHTML="<b>"+esc(p?.full_name||user.email)+"</b><br>Гиш
 const approved=p?.membership_status==="approved",admin=approved&&p?.role==="admin";$("adminPanel").classList.toggle("hidden",!admin);$("adminNav").classList.toggle("hidden",!admin);
 if(!approved){["announcements","polls","googleForms"].forEach(id=>$(id).textContent="Энэ хэсэг зөвхөн баталгаажсан гишүүдэд нээлттэй.");}
 await Promise.all([loadAnnouncements(),loadPolls(),loadForms(),loadEvents()]);
-if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();}
+if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();await loadAdminAnnouncements();}
 }
 async function loadAnnouncements(){const el=$("announcements");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("announcements").select("title,body,created_at").order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><small class="muted">'+new Date(x.created_at).toLocaleDateString("mn-MN")+'</small><h3>'+esc(x.title)+'</h3><p>'+esc(x.body)+'</p></article>').join("")||'<div class="empty">Одоогоор зарлал алга.</div>'}
+async function loadAdminAnnouncements(){
+ const el=$("adminAnnouncementList");if(!el||profile?.role!=="admin"||profile?.membership_status!=="approved")return;
+ const {data,error}=await db.from("announcements").select("id,title,body,created_at").order("created_at",{ascending:false});
+ if(error){el.textContent="Зарлал ачаалж чадсангүй: "+error.message;return}
+ el.innerHTML="";
+ for(const item of data||[]){
+  const row=document.createElement("div");row.className="item";
+  const title=document.createElement("b");title.textContent=item.title;
+  const body=document.createElement("p");body.textContent=item.body;
+  const date=document.createElement("small");date.className="muted";date.textContent=new Date(item.created_at).toLocaleString("mn-MN");
+  const del=document.createElement("button");del.type="button";del.className="btn danger";del.textContent="Зарлал устгах";
+  del.onclick=async()=>{
+   if(!confirm("“"+item.title+"” зарлалыг бүрмөсөн устгах уу?"))return;
+   del.disabled=true;
+   const {error}=await db.from("announcements").delete().eq("id",item.id);
+   if(error){alert("Устгаж чадсангүй: "+error.message);del.disabled=false;return}
+   await Promise.all([loadAdminAnnouncements(),loadAnnouncements()]);
+   alert("Зарлал устгагдлаа.");
+  };
+  row.append(date,title,body,del);el.append(row);
+ }
+ if(!data?.length)el.textContent="Одоогоор зарлал нийтлээгүй байна.";
+}
+
 async function loadPolls(){const el=$("polls");if(!profile||profile.membership_status!=="approved")return;const {data:polls,error}=await db.from("polls").select("id,title,description,closes_at").eq("is_published",true).order("created_at",{ascending:false});if(error){el.textContent=error.message;return}el.innerHTML="";for(const p of polls||[]){const [{data:opts,error:oe},{data:myVotes}]=await Promise.all([db.from("poll_options").select("id,option_text").eq("poll_id",p.id),db.from("poll_votes").select("option_id").eq("poll_id",p.id).eq("user_id",user.id)]);const f=document.createElement("form");f.className="item";const already=(myVotes||[]).length>0,closed=p.closes_at&&new Date(p.closes_at)<new Date();f.innerHTML='<h3>'+esc(p.title)+'</h3><p>'+esc(p.description||"")+'</p>'+((opts||[]).map(o=>'<label class="poll-option"><input type="radio" name="opt" value="'+esc(o.id)+'" '+(already?"disabled":"")+' required> '+esc(o.option_text)+'</label>').join(""))+'<button class="btn secondary" '+(already||closed?"disabled":"")+'>'+(already?"Санал өгсөн":closed?"Хаагдсан":"Санал өгөх")+'</button><div class="muted" aria-live="polite">'+(already?"Таны санал бүртгэгдсэн.":closed?"Санал авах хугацаа дууссан.":oe?esc(oe.message):"")+'</div>';f.onsubmit=async e=>{e.preventDefault();const chosen=f.querySelector("input:checked");if(!chosen)return;const {error}=await db.from("poll_votes").insert({poll_id:p.id,option_id:chosen.value,user_id:user.id});if(error)f.querySelector(".muted").textContent=error.code==="23505"?"Та энэ санал асуулгад өмнө нь санал өгсөн байна.":error.message;else{f.querySelector(".muted").textContent="Таны санал амжилттай бүртгэгдлээ.";f.querySelectorAll("input,button").forEach(x=>x.disabled=true);f.querySelector("button").textContent="Санал өгсөн"}};el.append(f)}if(!polls?.length)el.innerHTML='<div class="empty">Одоогоор идэвхтэй санал асуулга алга.</div>'}
 async function loadForms(){const el=$("googleForms");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("google_forms_links").select("title,form_url,created_at").eq("is_published",true).order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><h3>'+esc(x.title)+'</h3><a class="btn secondary" target="_blank" rel="noopener noreferrer" href="'+esc(x.form_url)+'">Google Forms нээх ↗</a></article>').join("")||'<div class="empty">Одоогоор нийтлэгдсэн Google Forms байхгүй.</div>'}
 async function loadEvents(){const el=$("events");const {data,error}=await db.from("activity_events").select("id,title,description,location,starts_at,registration_deadline").eq("is_published",true).order("starts_at",{ascending:true});if(error){el.textContent=error.message;return}el.innerHTML="";for(const ev of data||[]){const card=document.createElement("article");card.className="item";const date=ev.starts_at?new Date(ev.starts_at).toLocaleString("mn-MN"):"Огноо зарлаагүй";card.innerHTML='<h3>'+esc(ev.title)+'</h3><p>'+esc(ev.description||"")+'</p><p><b>Хэзээ:</b> '+esc(date)+'<br><b>Байршил:</b> '+esc(ev.location||"Тодорхойгүй")+'</p>';if(profile?.membership_status==="approved"){const btn=document.createElement("button");btn.className="btn secondary";btn.textContent="Оролцохоор бүртгүүлэх";btn.onclick=async()=>{btn.disabled=true;const {error}=await db.from("event_registrations").insert({event_id:ev.id,user_id:user.id});btn.textContent=error?(error.code==="23505"?"Өмнө бүртгүүлсэн":"Алдаа гарлаа"):"Бүртгэл амжилттай";};card.append(btn)}else{const p=document.createElement("p");p.className="muted";p.textContent="Бүртгүүлэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.";card.append(p)}el.append(card)}if(!data?.length)el.innerHTML='<div class="empty">Одоогоор арга хэмжээний мэдээлэл алга.</div>'}
