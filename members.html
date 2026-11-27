@@ -132,6 +132,12 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 .chat-compose button{flex:none}
 .report-file{display:inline-block;margin:5px 6px 0 0;font-size:12px;color:#174b7a;text-decoration:underline;overflow-wrap:anywhere}
 @media(max-width:560px){.chat-messages{height:55vh;min-height:260px;max-height:440px}.chat-compose{align-items:stretch}.chat-compose button{min-width:88px}.chat-message{max-width:94%}}
+
+.organization-card{border-top:1px solid var(--line);padding:14px 0}
+.organization-card h4{margin:0 0 5px;color:var(--navy)}
+.organization-card .org-meta{font-size:12px;color:var(--muted);margin-bottom:8px}
+.org-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.org-actions select{max-width:240px}
 </style>
 </head>
 <body>
@@ -169,6 +175,22 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
  <h3 style="color:var(--navy);font-size:16px;margin:22px 0 8px">Миний тайлангууд</h3>
  <div id="memberReports" class="empty">Нэвтэрсний дараа тайлангууд харагдана.</div>
 </section>
+
+<section class="box hidden" id="organizationArea">
+ <h2>Сургууль, клубын хэсэг</h2>
+ <p class="muted">Өөрийн эрхтэй сургууль эсвэл клубээ сонгон санал, хүсэлт болон үйл ажиллагааны тайлан илгээнэ. Сургуулийн менежер тухайн сургуулийн бүх клубийн мэдээлэлд хандах эрхтэй.</p>
+ <form id="organizationSubmissionForm">
+  <label>Сургууль / клуб</label><select id="organizationSelect" required><option value="">Байгууллага сонгоно уу</option></select>
+  <label>Илгээх төрөл</label><select id="organizationSubmissionType"><option value="report">Тайлан</option><option value="suggestion">Санал, хүсэлт</option></select>
+  <label>Гарчиг</label><input id="organizationSubmissionTitle" required maxlength="180" placeholder="Гарчиг">
+  <label>Дэлгэрэнгүй мэдээлэл</label><textarea id="organizationSubmissionContent" placeholder="Тайлан эсвэл саналаа дэлгэрэнгүй бичнэ үү."></textarea>
+  <label>Зураг, баримт бичиг болон бусад файл хавсаргах (25MB хүртэл)</label><input id="organizationSubmissionFiles" type="file" multiple>
+  <button class="btn gold" id="organizationSubmissionSend" style="margin-top:12px">Илгээх</button>
+  <div id="organizationSubmissionStatus" class="status">Зөвхөн танд олгосон байгууллагын хүрээнд илгээх боломжтой.</div>
+ </form>
+ <h3 style="color:var(--navy);font-size:16px;margin:22px 0 8px">Байгууллагын тайлан, санал хүсэлт</h3>
+ <div id="organizationSubmissions" class="empty">Байгууллагын мэдээлэл ачаалж байна.</div>
+</section>
 <section class="box" id="memberChatArea">
  <h2>Гишүүдийн чат</h2>
  <p class="muted">Баталгаажсан гишүүд хоорондоо мэдээлэл, асуулт, зар мэдээ солилцох нээлттэй групп чат.</p>
@@ -181,6 +203,20 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 </section>
 <section class="box hidden" id="adminPanel">
 <h2>Админ удирдлага</h2><div class="status good">Админ эрх баталгаажлаа. Эндээс сайт дахь мэдээллийг удирдана.</div>
+
+<section class="admin-form" id="organizationAdmin">
+ <h3>Сургууль, клуб болон эрхийн удирдлага</h3>
+ <p class="muted">Сургууль, клуб үүсгэж, менежер эсвэл тэргүүний эрхийг зөвхөн админ олгоно. Сургуулийн менежер тухайн сургуулийн клубүүдийг мөн удирдана.</p>
+ <form id="organizationAdminForm">
+  <div class="row"><div><label>Байгууллагын төрөл</label><select id="adminOrgType"><option value="school">Сургууль</option><option value="club">Клуб</option></select></div><div><label>Нэр</label><input id="adminOrgName" required maxlength="180" placeholder="Сургуулийн / клубийн нэр"></div></div>
+  <div id="adminOrgSchoolWrap" class="hidden"><label>Харьяалах сургууль</label><select id="adminOrgSchool"></select></div>
+  <div id="adminOrgManagerWrap"><label>Сургуулийн менежер</label><select id="adminOrgManager"><option value="">Эрх олгохгүй</option></select></div>
+  <div id="adminOrgLeaderWrap" class="hidden"><label>Клубийн тэргүүн</label><select id="adminOrgLeader"><option value="">Эрх олгохгүй</option></select></div>
+  <button class="btn gold" style="margin-top:12px">Байгууллага үүсгэх</button>
+  <div id="organizationAdminStatus" class="status">Эрх олгохын өмнө тухайн хүн гишүүнээр баталгаажсан байх шаардлагатай.</div>
+ </form>
+ <div id="adminOrganizationList" class="empty">Байгууллагууд ачаалж байна.</div>
+</section>
 <section class="admin-form" id="siteEditor">
 <h3>Нүүр хуудасны бүх бичвэр, зураг засах</h3>
 <p class="muted">Энд хадгалсан өөрчлөлт нүүр хуудсанд шууд харагдана. Зөвхөн админ засварлана.</p>
@@ -242,7 +278,7 @@ if(!approved){
  }
 }
 await Promise.all([loadAnnouncements(),loadPolls(),loadForms(),loadEvents()]);
-if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();await loadAdminAnnouncements();}
+await loadOrganizationArea();if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();await loadAdminAnnouncements();await loadAdminOrganizations();setOrgAdminType();}
 }
 async function loadAnnouncements(){const el=$("announcements");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("announcements").select("title,body,created_at").order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><small class="muted">'+new Date(x.created_at).toLocaleDateString("mn-MN")+'</small><h3>'+esc(x.title)+'</h3><p>'+esc(x.body)+'</p></article>').join("")||'<div class="empty">Одоогоор зарлал алга.</div>'}
 async function loadAdminAnnouncements(){
@@ -282,6 +318,94 @@ async function uploadMemberFile(file){
  if(error)throw error;
  return {path,name:file.name,type:file.type||"Файлын төрөл тодорхойгүй",size:file.size};
 }
+
+let accessibleOrganizations=[];
+const orgSubmissionLabels={received:"Хүлээн авсан",reviewing:"Хянаж байна",completed:"Шийдвэрлэсэн"};
+const orgTypeLabels={school:"Сургууль",club:"Клуб"};
+function setOrgAdminType(){
+ const type=$("adminOrgType")?.value||"school";
+ $("adminOrgSchoolWrap")?.classList.toggle("hidden",type!=="club");
+ $("adminOrgManagerWrap")?.classList.toggle("hidden",type!=="school");
+ $("adminOrgLeaderWrap")?.classList.toggle("hidden",type!=="club");
+}
+$("adminOrgType")?.addEventListener("change",setOrgAdminType);
+async function loadOrganizationArea(){
+ const area=$("organizationArea");if(!area)return;
+ if(!user||profile?.membership_status!=="approved"){area.classList.add("hidden");return}
+ const {data,error}=await db.from("organizations").select("id,name,org_type,parent_school_id,manager_user_id,leader_user_id").order("name");
+ if(error){area.classList.add("hidden");return}
+ accessibleOrganizations=data||[];
+ if(!accessibleOrganizations.length){area.classList.add("hidden");return}
+ area.classList.remove("hidden");
+ const select=$("organizationSelect");select.innerHTML='<option value="">Байгууллага сонгоно уу</option>';
+ for(const org of accessibleOrganizations){const opt=document.createElement("option");opt.value=org.id;opt.textContent=(orgTypeLabels[org.org_type]||"Байгууллага")+" · "+org.name;select.append(opt)}
+ await loadOrganizationSubmissions();
+}
+async function loadOrganizationSubmissions(){
+ const el=$("organizationSubmissions");if(!el||!accessibleOrganizations.length)return;
+ const {data,error}=await db.from("organization_submissions").select("id,organization_id,submitted_by,submission_type,title,content,attachments,status,created_at").order("created_at",{ascending:false}).limit(100);
+ if(error){el.textContent="Мэдээлэл ачаалж чадсангүй: "+error.message;return}
+ el.innerHTML="";
+ for(const item of data||[]){
+  const org=accessibleOrganizations.find(x=>x.id===item.organization_id);
+  const card=document.createElement("article");card.className="organization-card";
+  const heading=document.createElement("h4");heading.textContent=(item.submission_type==="report"?"Тайлан: ":"Санал, хүсэлт: ")+item.title;
+  const meta=document.createElement("div");meta.className="org-meta";meta.textContent=(org?.name||"Байгууллага")+" · "+new Date(item.created_at).toLocaleString("mn-MN")+" · "+(orgSubmissionLabels[item.status]||item.status);
+  const body=document.createElement("p");body.textContent=item.content||"Тайлбар оруулаагүй.";
+  card.append(meta,heading,body);
+  for(const file of item.attachments||[]){const {data:signed}=await db.storage.from("member-files").createSignedUrl(file.path,3600);if(signed?.signedUrl){const a=document.createElement("a");a.className="report-file";a.href=signed.signedUrl;a.target="_blank";a.rel="noopener noreferrer";a.textContent="📎 "+file.name;card.append(a)}}
+  const actions=document.createElement("div");actions.className="org-actions";
+  const state=document.createElement("select");state.innerHTML='<option value="received">Хүлээн авсан</option><option value="reviewing">Хянаж байна</option><option value="completed">Шийдвэрлэсэн</option>';state.value=item.status;
+  const save=document.createElement("button");save.type="button";save.className="btn secondary";save.textContent="Төлөв хадгалах";
+  save.onclick=async()=>{save.disabled=true;const {error}=await db.from("organization_submissions").update({status:state.value}).eq("id",item.id);save.disabled=false;if(error)alert("Төлөв хадгалж чадсангүй: "+error.message);else await loadOrganizationSubmissions()};
+  actions.append(state,save);card.append(actions);el.append(card);
+ }
+ if(!data?.length)el.textContent="Одоогоор тайлан, санал хүсэлт ирээгүй байна.";
+}
+$("organizationSubmissionForm").onsubmit=async e=>{
+ e.preventDefault();if(!user||profile?.membership_status!=="approved")return;
+ const orgId=$("organizationSelect").value;if(!orgId){$("organizationSubmissionStatus").textContent="Байгууллагаа сонгоно уу.";return}
+ const btn=$("organizationSubmissionSend"),status=$("organizationSubmissionStatus"),files=[...$("organizationSubmissionFiles").files];btn.disabled=true;status.textContent="Файлууд байршуулж байна…";
+ try{
+  const attachments=[];for(const file of files)attachments.push(await uploadMemberFile(file));
+  const {error}=await db.from("organization_submissions").insert({organization_id:orgId,submitted_by:user.id,submission_type:$("organizationSubmissionType").value,title:$("organizationSubmissionTitle").value.trim(),content:$("organizationSubmissionContent").value.trim(),attachments});
+  if(error)throw error;e.target.reset();status.className="status good";status.textContent="Амжилттай илгээгдлээ.";await loadOrganizationSubmissions();
+ }catch(err){status.className="status bad";status.textContent="Илгээж чадсангүй: "+err.message}
+ finally{btn.disabled=false}
+};
+async function loadAdminOrganizations(){
+ if(profile?.role!=="admin"||profile?.membership_status!=="approved")return;
+ const [{data:orgs,error:oe},{data:people,error:pe}]=await Promise.all([
+  db.from("organizations").select("id,name,org_type,parent_school_id,manager_user_id,leader_user_id").order("name"),
+  db.from("profiles").select("id,full_name,member_code,membership_status").eq("membership_status","approved").order("full_name")
+ ]);
+ const list=$("adminOrganizationList");if(oe||pe){list.textContent=(oe||pe).message;return}
+ const schools=(orgs||[]).filter(o=>o.org_type==="school");
+ const fillPeople=(el,selected)=>{el.innerHTML='<option value="">Эрх олгохгүй</option>';for(const p of people||[]){const op=document.createElement("option");op.value=p.id;op.textContent=(p.full_name||"Нэргүй")+" · "+(p.member_code||"");op.selected=p.id===selected;el.append(op)}};
+ $("adminOrgManager").innerHTML="";fillPeople($("adminOrgManager"),null);
+ $("adminOrgLeader").innerHTML="";fillPeople($("adminOrgLeader"),null);
+ $("adminOrgSchool").innerHTML="";for(const s of schools){const op=document.createElement("option");op.value=s.id;op.textContent=s.name;$("adminOrgSchool").append(op)}
+ list.innerHTML="";
+ for(const org of orgs||[]){
+  const row=document.createElement("div");row.className="organization-card";
+  const title=document.createElement("h4");title.textContent=(org.org_type==="school"?"СУРГУУЛЬ · ":"КЛУБ · ")+org.name;row.append(title);
+  if(org.org_type==="club"){const parent=schools.find(s=>s.id===org.parent_school_id);const meta=document.createElement("div");meta.className="org-meta";meta.textContent="Харьяалах сургууль: "+(parent?.name||"Тодорхойгүй");row.append(meta)}
+  const controls=document.createElement("div");controls.className="org-actions";
+  const who=document.createElement("select");fillPeople(who,org.org_type==="school"?org.manager_user_id:org.leader_user_id);
+  const save=document.createElement("button");save.type="button";save.className="btn secondary";save.textContent=org.org_type==="school"?"Менежерийн эрх хадгалах":"Тэргүүний эрх хадгалах";
+  save.onclick=async()=>{save.disabled=true;const patch=org.org_type==="school"?{manager_user_id:who.value||null}:{leader_user_id:who.value||null};const {error}=await db.from("organizations").update(patch).eq("id",org.id);save.disabled=false;if(error)alert(error.message);else{alert("Эрх шинэчлэгдлээ.");await loadAdminOrganizations();await loadOrganizationArea()}};
+  controls.append(who,save);row.append(controls);list.append(row);
+ }
+ if(!orgs?.length)list.textContent="Одоогоор сургууль, клуб үүсгээгүй байна.";
+}
+$("organizationAdminForm").onsubmit=async e=>{
+ e.preventDefault();if(profile?.role!=="admin")return;
+ const type=$("adminOrgType").value,name=$("adminOrgName").value.trim();
+ const row={name,org_type:type,parent_school_id:type==="club"?$("adminOrgSchool").value:null,manager_user_id:type==="school"?($("adminOrgManager").value||null):null,leader_user_id:type==="club"?($("adminOrgLeader").value||null):null};
+ const {error}=await db.from("organizations").insert(row);
+ if(error){$("organizationAdminStatus").className="status bad";$("organizationAdminStatus").textContent="Үүсгэж чадсангүй: "+error.message;return}
+ e.target.reset();setOrgAdminType();$("organizationAdminStatus").className="status good";$("organizationAdminStatus").textContent="Байгууллага амжилттай үүслээ.";await loadAdminOrganizations();await loadOrganizationArea();
+};
 async function loadMemberReports(){
  const el=$("memberReports");if(!el||!user||profile?.membership_status!=="approved")return;
  const query=db.from("member_reports").select("id,title,content,attachments,status,created_at,submitted_by").order("created_at",{ascending:false});
