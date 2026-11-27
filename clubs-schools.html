@@ -62,6 +62,28 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
+
+/* Сургууль, клубийн булангийн гар утасны эцсийн тохируулга */
+html{scroll-padding-top:85px;overflow-x:hidden}
+body{overflow-x:hidden;-webkit-text-size-adjust:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(213,181,111,.8);outline-offset:3px}
+.grid>*{min-width:0}
+@media(max-width:800px){
+ header{position:sticky;top:0}
+ .nav{-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+ .nav a{scroll-snap-align:start}
+ .actions .btn{min-height:48px}
+}
+@media(max-width:560px){
+ .nav{padding-bottom:5px}
+ .nav a{min-height:44px}
+ .sectiontitle h2{font-size:16px}
+ .sectiontitle .btn{min-height:42px}
+ .submission .actions{display:grid;grid-template-columns:1fr}
+ .submission .actions select,.submission .actions button{width:100%;max-width:none;min-height:46px}
+}
+
 </style></head><body>
 <header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүд"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>СУРГУУЛЬ, КЛУБИЙН ЦАХИМ ОРЧИН</small></span></a><nav class="nav"><a href="./index.html">Нүүр хуудас</a><a href="./members.html">Гишүүдийн булан</a><a href="#workspace">Ажлын хэсэг</a></nav></div></header>
 <main class="wrap"><section class="hero"><div class="eyebrow">СУРГУУЛЬ · КЛУБ · ХАМТЫН АЖИЛЛАГАА</div><h1>Сургууль, клубийн булан</h1><p>Сургууль болон клубүүдийн үйл ажиллагааг нэг дороос зохион байгуулж, санал хүсэлт, тайлангаа илгээж, харьяа нэгжийн мэдээллээ удирдана.</p></section>
