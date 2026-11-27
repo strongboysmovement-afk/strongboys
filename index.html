@@ -142,4 +142,13 @@ const escapeHtml=function(s){return String(s??'').replace(/[&<>"']/g,function(c)
  }catch(e){console.warn('News feed unavailable',e)}
 })();
 </script>
+<script>
+(function(){
+ const nodes=document.querySelectorAll('main section .wrap, main .stats .wrap, main footer .wrap');
+ if(!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches){nodes.forEach(el=>el.classList.add('is-visible'));return;}
+ nodes.forEach((el,i)=>{el.setAttribute('data-reveal','');el.style.transitionDelay=(Math.min(i%4,3)*65)+'ms';});
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.12,rootMargin:'0px 0px -35px 0px'});
+ nodes.forEach(el=>observer.observe(el));
+})();
+</script>
 </body></html>
