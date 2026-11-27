@@ -257,7 +257,7 @@ button{min-height:42px}
 </style>
 </head>
 <body>
-<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav><a href="./index.html">Нүүр хуудас</a><a href="./clubs-schools.html">Сургууль, клубийн булан</a><a href="#memberArea">Гишүүний хэсэг</a><a href="#pollArea">Санал асуулга</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
+<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav aria-label="Гишүүдийн үндсэн цэс"><a href="./index.html">Нүүр</a><a href="#memberArea">Миний мэдээлэл</a><a href="#announcementArea">Зарлал</a><a href="#pollArea">Санал асуулга</a><a href="#formsArea">Маягт</a><a href="#eventsArea">Арга хэмжээ</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="./clubs-schools.html">Сургууль, клуб</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
 <main class="wrap">
 <div class="intro"><h1>Гишүүдийн булан</h1><p>Нэг дороос бүртгэлээ удирдаж, зарлал уншиж, санал асуулгад оролцож, арга хэмжээнд бүртгүүлнэ.</p></div>
 <div class="layout">
@@ -271,10 +271,10 @@ button{min-height:42px}
 </aside>
 <div id="memberArea">
 <section class="box"><h2>Эхлэх заавар</h2><p class="muted">1. Шинээр орж байгаа бол “Бүртгүүлэх” товчийг сонгоно. 2. И-мэйлээ баталгаажуулна. 3. Дахин нэвтэрч гишүүнчлэлийн хүсэлтээ илгээнэ. Админ баталсны дараа гишүүдийн зарлал, санал асуулга болон бусад хэсэг нээгдэнэ.</p><h2 style="margin-top:18px">Таны гишүүний мэдээлэл</h2><div id="profileStatus" class="status">Нэвтэрсний дараа таны гишүүнчлэлийн төлөв харагдана.</div></section>
-<section class="box"><h2>Гишүүдэд зориулсан зарлал</h2><div id="announcements" class="muted">Баталгаажсан гишүүд зарлалыг үзнэ.</div></section>
+<section class="box" id="announcementArea"><h2>Гишүүдэд зориулсан зарлал</h2><div id="announcements" class="muted">Баталгаажсан гишүүд зарлалыг үзнэ.</div></section>
 <section class="box" id="pollArea"><h2>Санал асуулга</h2><div id="polls" class="muted">Баталгаажсан гишүүд санал өгнө.</div></section>
-<section class="box"><h2>Google Forms</h2><div id="googleForms" class="muted">Баталгаажсан гишүүдэд зориулсан холбоосууд энд харагдана.</div></section>
-<section class="box"><h2>Үйл ажиллагаа, арга хэмжээ</h2><div id="events" class="muted">Одоогоор арга хэмжээний мэдээлэл алга.</div></section>
+<section class="box" id="formsArea"><h2>Google Forms</h2><div id="googleForms" class="muted">Баталгаажсан гишүүдэд зориулсан холбоосууд энд харагдана.</div></section>
+<section class="box" id="eventsArea"><h2>Үйл ажиллагаа, арга хэмжээ</h2><div id="events" class="muted">Одоогоор арга хэмжээний мэдээлэл алга.</div></section>
 
 <section class="box" id="communityArea">
  <h2>Тайлан илгээх</h2>
