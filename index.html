@@ -82,6 +82,27 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}[data-reveal]{opacity:1;transform:none;filter:none;transition:none}*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
 
+
+/* Нийт сайтын гар утасны эцсийн тохируулга */
+html{scroll-padding-top:88px;overflow-x:hidden}
+body{overflow-x:hidden;-webkit-text-size-adjust:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(213,181,111,.8);outline-offset:3px}
+@media(max-width:760px){
+ .head{width:calc(100% - 20px)}
+ nav{max-height:calc(100dvh - 90px);overflow-y:auto}
+ .hero h1{overflow-wrap:break-word}
+ .section-head,.about-copy,.quote,.card,.activity,.news-card{min-width:0}
+ .btn{min-height:48px}
+ .stat{line-height:1.5}
+}
+@media(max-width:420px){
+ .wrap{width:calc(100% - 26px)}
+ .brand small{max-width:210px;line-height:1.35}
+ .hero h1{font-size:clamp(30px,9vw,36px)}
+ .quote{overflow-wrap:anywhere}
+}
+
 </style>
 </head>
 <body>
