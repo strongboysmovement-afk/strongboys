@@ -69,6 +69,45 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}[data-reveal]{opacity:1;transform:none;filter:none;transition:none}*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
 
+
+/* Admin dashboard: clear navigation and grouped workspaces */
+#adminPanel{padding:24px}
+.admin-dashboard-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.admin-dashboard-head h2{margin:0}
+.admin-dashboard-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.admin-dashboard-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:start}
+.admin-sidebar{display:grid;gap:7px;position:sticky;top:110px}
+.admin-tab{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:1px solid transparent;border-radius:12px;background:transparent;color:#40546a;font:600 13px Inter,Arial;cursor:pointer;text-align:left;transition:.2s}
+.admin-tab:hover{background:#edf3f8}
+.admin-tab.active{background:#102b4e;color:white;box-shadow:0 7px 18px #102b4e20}
+.admin-tab span{font-size:17px;width:22px;text-align:center}
+.admin-workspace{min-width:0}
+.admin-page{display:none;animation:adminIn .22s ease}
+.admin-page.active{display:block}
+@keyframes adminIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.admin-page-title{margin:0 0 5px;color:var(--navy);font-size:20px}
+.admin-page-hint{margin:0 0 16px;color:var(--muted);font-size:13px}
+.admin-page-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.admin-page-grid>.admin-form{margin:0;padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.admin-page-grid>.admin-form h3{font-size:15px}
+.admin-page-grid>.admin-form:only-child{grid-column:1/-1}
+.admin-page .admin-form{min-width:0}
+.admin-page .member-row{grid-template-columns:minmax(0,1fr);gap:9px}
+.admin-page .member-actions{flex-wrap:wrap}
+.admin-page .member-actions select{min-width:110px;flex:1}
+.admin-page #siteFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.admin-page #siteFields>div{min-width:0}
+.admin-page #siteEditorForm>.admin-grid{gap:12px}
+.admin-page #siteEditorForm>.admin-grid>div{min-width:0}
+.admin-page #adminPostList,.admin-page #adminAnnouncementList{max-height:560px;overflow:auto;padding-right:4px}
+.admin-page .item{padding:12px 0}
+.admin-overview-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.admin-overview-card{padding:15px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#fff,#f5f8fb)}
+.admin-overview-card b{display:block;color:var(--navy);font-size:14px}
+.admin-overview-card small{color:var(--muted);font-size:12px}
+@media(max-width:850px){.admin-dashboard-layout{grid-template-columns:1fr}.admin-sidebar{position:static;display:flex;overflow-x:auto;padding:2px 0 8px}.admin-tab{width:auto;white-space:nowrap;flex:none}.admin-page-grid{grid-template-columns:1fr}}
+@media(max-width:560px){#adminPanel{padding:14px}.admin-overview-cards{grid-template-columns:1fr}.admin-page #siteFields{grid-template-columns:1fr}.admin-tab{padding:10px 12px}.admin-page-grid>.admin-form{padding:13px}}
+
 </style>
 </head>
 <body>
@@ -309,4 +348,54 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
  nodes.forEach(el=>observer.observe(el));
 })();
 </script>
+
+<script>
+(function setupAdminDashboard(){
+ const panel=document.getElementById('adminPanel');
+ if(!panel||panel.dataset.dashboardReady)return;
+ panel.dataset.dashboardReady='1';
+ const intro=panel.querySelector(':scope > .status');
+ const header=document.createElement('div');header.className='admin-dashboard-head';
+ header.innerHTML='<div><h2>Админ удирдлага</h2><p>Удирдах хэсгээ сонгоод зөвхөн тухайн мэдээллээ засварлана.</p></div>';
+ const overview=document.createElement('div');overview.className='admin-overview-cards';
+ overview.innerHTML='<div class="admin-overview-card"><b>Нүүр хуудас</b><small>Бичвэр, зураг, бүтэц засах</small></div><div class="admin-overview-card"><b>Мэдээ ба зарлал</b><small>Нийтлэх, засах, устгах</small></div><div class="admin-overview-card"><b>Гишүүд ба үйл ажиллагаа</b><small>Хүсэлт, эрх, арга хэмжээ удирдах</small></div>';
+ const layout=document.createElement('div');layout.className='admin-dashboard-layout';
+ const sidebar=document.createElement('nav');sidebar.className='admin-sidebar';sidebar.setAttribute('aria-label','Админ цэс');
+ const workspace=document.createElement('div');workspace.className='admin-workspace';
+ const pages=[
+  {id:'home',label:'Ерөнхий тойм',icon:'⌂',hint:'Удирдлагын хэсгийн үндсэн чиглэлүүд.'},
+  {id:'site',label:'Нүүр хуудас',icon:'▣',hint:'Сайтын бичвэр, лого болон арын зургийг эндээс өөрчилнө.',nodes:['siteEditor']},
+  {id:'news',label:'Мэдээ',icon:'▤',hint:'Нүүр хуудсанд мэдээ нийтлэх, өмнөх мэдээг засах эсвэл устгах.',nodes:['postForm','adminPostList']},
+  {id:'announcements',label:'Зарлал',icon:'◉',hint:'Зөвхөн гишүүдэд харагдах зарлал нийтлэх, устгах.',nodes:['announcementForm','adminAnnouncementList']},
+  {id:'members',label:'Гишүүд',icon:'♙',hint:'Гишүүнчлэлийн хүсэлт батлах, төлөв болон админ эрх удирдах.',nodes:['memberList']},
+  {id:'activities',label:'Үйл ажиллагаа',icon:'▦',hint:'Санал асуулга, Google Forms болон арга хэмжээ нэмэх.',nodes:['pollForm','googleFormForm','eventForm']}
+ ];
+ const pagesById={};
+ pages.forEach((p,index)=>{
+  const page=document.createElement('section');page.className='admin-page'+(index===0?' active':'');page.dataset.page=p.id;
+  page.innerHTML='<h3 class="admin-page-title">'+p.label+'</h3><p class="admin-page-hint">'+p.hint+'</p>';
+  const grid=document.createElement('div');grid.className='admin-page-grid';page.append(grid);workspace.append(page);pagesById[p.id]={page,grid};
+  const btn=document.createElement('button');btn.type='button';btn.className='admin-tab'+(index===0?' active':'');btn.innerHTML='<span>'+p.icon+'</span>'+p.label;
+  btn.addEventListener('click',()=>{sidebar.querySelectorAll('.admin-tab').forEach(x=>x.classList.remove('active'));workspace.querySelectorAll('.admin-page').forEach(x=>x.classList.remove('active'));btn.classList.add('active');page.classList.add('active');});
+  sidebar.append(btn);
+ });
+ function move(id,target){
+  const el=document.getElementById(id);if(!el)return;
+  let node=el;
+  if(['adminPostList','adminAnnouncementList','memberList'].includes(id))node=el.closest('.admin-form')||el;
+  pagesById[target].grid.append(node);
+ }
+ move('siteEditor','site');
+ move('postForm','news');move('adminPostList','news');
+ move('announcementForm','announcements');move('adminAnnouncementList','announcements');
+ move('memberList','members');
+ move('pollForm','activities');move('googleFormForm','activities');move('eventForm','activities');
+ header.append(overview);
+ panel.innerHTML='';
+ panel.append(header);
+ if(intro){intro.className='status good';intro.textContent='Админ эрх баталгаажлаа. Доорх цэснээс удирдах хэсгээ сонгоно уу.';panel.append(intro)}
+ panel.append(layout);layout.append(sidebar,workspace);
+})();
+</script>
+
 </body></html>
