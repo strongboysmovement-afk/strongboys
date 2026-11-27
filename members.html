@@ -98,7 +98,11 @@ const siteFieldDefs=[
  ["stat_1_title","Онцлох 1 — гарчиг","text"],["stat_1_body","Онцлох 1 — тайлбар","text"],["stat_2_title","Онцлох 2 — гарчиг","text"],["stat_2_body","Онцлох 2 — тайлбар","text"],["stat_3_title","Онцлох 3 — гарчиг","text"],["stat_3_body","Онцлох 3 — тайлбар","text"],
  ["about_eyebrow","Хөтөлбөр — жижиг гарчиг","text"],["about_title","Хөтөлбөр — гол гарчиг","text"],["about_intro","Хөтөлбөр — эхний тайлбар","textarea"],["about_detail","Хөтөлбөр — дэлгэрэнгүй тайлбар","textarea"],["quote","Онцлох эшлэл","textarea"],
  ["pillars_title","Дөрвөн чиглэлийн гарчиг","text"],["activities_title","Үйл ажиллагааны гарчиг","text"],["news_title","Мэдээний хэсгийн гарчиг","text"],["video_title","Видео хэсгийн гарчиг","text"],["partners_title","Хамтрагчдын хэсгийн гарчиг","text"],
- ["cta_eyebrow","Холбоо барих — жижиг гарчиг","text"],["cta_title","Холбоо барих — гол гарчиг","text"],["cta_body","Холбоо барих — тайлбар","textarea"],["contact_email","Холбоо барих и-мэйл","text"],["contact_phone","Холбоо барих утас","text"]
+ ["cta_eyebrow","Холбоо барих — жижиг гарчиг","text"],["cta_title","Холбоо барих — гол гарчиг","text"],["cta_body","Холбоо барих — тайлбар","textarea"],["contact_email","Холбоо барих и-мэйл","text"],["contact_phone","Холбоо барих утас","text"],
+ ["top_right_label","Дээд мөрийн баруун бичвэр","text"],["pillars_intro","Чиглэлүүдийн тайлбар","textarea"],
+ ["pillar1_title","Чиглэл 1 — гарчиг","text"],["pillar1_body","Чиглэл 1 — тайлбар","textarea"],["pillar2_title","Чиглэл 2 — гарчиг","text"],["pillar2_body","Чиглэл 2 — тайлбар","textarea"],["pillar3_title","Чиглэл 3 — гарчиг","text"],["pillar3_body","Чиглэл 3 — тайлбар","textarea"],["pillar4_title","Чиглэл 4 — гарчиг","text"],["pillar4_body","Чиглэл 4 — тайлбар","textarea"],
+ ["activities_intro","Үйл ажиллагааны тайлбар","textarea"],["activity1_title","Үйл ажиллагаа 1 — гарчиг","text"],["activity1_body","Үйл ажиллагаа 1 — тайлбар","textarea"],["activity2_title","Үйл ажиллагаа 2 — гарчиг","text"],["activity2_body","Үйл ажиллагаа 2 — тайлбар","textarea"],["activity3_title","Үйл ажиллагаа 3 — гарчиг","text"],["activity3_body","Үйл ажиллагаа 3 — тайлбар","textarea"],
+ ["news_intro","Мэдээний хэсгийн тайлбар","textarea"],["video_intro","Видео хэсгийн тайлбар","textarea"],["partners_intro","Хамтрагчдын тайлбар","textarea"],["footer_slogan","Footer уриа","text"],["footer_menu_title","Footer цэсний гарчиг","text"],["footer_about","Footer хөтөлбөрийн холбоос","text"],["footer_activities","Footer үйл ажиллагааны холбоос","text"],["footer_news","Footer мэдээний холбоос","text"],["footer_learning","Footer сургалтын холбоос","text"],["footer_members","Footer гишүүдийн холбоос","text"],["copyright","Зохиогчийн эрхийн мөр","text"]
 ];
 let siteSettingsId=null,siteSettings={};
 function renderSiteFields(values){
@@ -142,7 +146,7 @@ $("siteEditorForm").onsubmit=async e=>{
 };
 async function loadAdminPosts(){
  const el=$("adminPostList");if(!el)return;
- const {data,error}=await db.from("posts").select("id,title,summary,body,category,cover_image_url,status").neq("slug","__site_content__").order("created_at",{ascending:false}).limit(50);
+ const {data,error}=await db.from("posts").select("id,title,summary,body,category,cover_image_url,status").or("slug.is.null,slug.neq.__site_content__").order("created_at",{ascending:false}).limit(50);
  if(error){el.textContent=error.message;return}el.innerHTML="";
  for(const post of data||[]){
   const row=document.createElement("div");row.className="item";
