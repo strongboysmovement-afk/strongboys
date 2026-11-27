@@ -138,6 +138,51 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 .organization-card .org-meta{font-size:12px;color:var(--muted);margin-bottom:8px}
 .org-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
 .org-actions select{max-width:240px}
+
+/* Нийт гишүүдийн булангийн гар утасны тав тух */
+html{scroll-padding-top:92px;overflow-x:hidden}
+body{overflow-x:hidden;-webkit-text-size-adjust:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(213,181,111,.8);outline-offset:3px}
+.layout>*{min-width:0}
+.item,.member-row,.admin-form,.admin-page,.admin-workspace{min-width:0;overflow-wrap:anywhere}
+input,select,textarea{font-size:16px;max-width:100%}
+button{min-height:42px}
+@media(max-width:850px){
+ .head{align-items:center}
+ .admin-sidebar{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+ .admin-tab{min-height:44px;scroll-snap-align:start}
+ .admin-dashboard-layout{gap:12px}
+ .admin-page-grid{gap:12px}
+}
+@media(max-width:560px){
+ html{scroll-padding-top:78px}
+ header{top:4px}
+ .head{max-height:none;gap:8px}
+ .head:not(.is-compact){align-items:stretch}
+ .head:not(.is-compact) nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .head:not(.is-compact) nav a{min-width:0;overflow-wrap:anywhere;line-height:1.25}
+ .head:not(.is-compact) nav a.nav-admin{grid-column:1/-1}
+ main{padding-top:17px}
+ .intro h1{overflow-wrap:anywhere}
+ .panel,.box{min-width:0}
+ .tabs button,.btn{min-height:46px}
+ .member-actions{width:100%}
+ .member-actions button,.member-actions select{width:100%;min-height:44px}
+ .admin-dashboard-head{align-items:flex-start}
+ .admin-dashboard-head .btn{width:100%}
+ .chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto}
+ .chat-compose textarea{min-width:0;width:100%}
+ .chat-messages{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+ .admin-page #adminPostList,.admin-page #adminAnnouncementList{max-height:none;overflow:visible;padding:0}
+}
+@media(max-width:360px){
+ .wrap{width:calc(100% - 18px)}
+ .brand{font-size:11px}
+ .brand img{width:40px}
+ .admin-tab{font-size:12px;padding:9px 10px}
+}
+
 </style>
 </head>
 <body>
