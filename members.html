@@ -31,9 +31,23 @@
 <section class="box"><h2>Үйл ажиллагаа, арга хэмжээ</h2><div id="events" class="muted">Одоогоор арга хэмжээний мэдээлэл алга.</div></section>
 <section class="box hidden" id="adminPanel">
 <h2>Админ удирдлага</h2><div class="status good">Админ эрх баталгаажлаа. Эндээс сайт дахь мэдээллийг удирдана.</div>
+<section class="admin-form" id="siteEditor">
+<h3>Нүүр хуудасны бүх бичвэр, зураг засах</h3>
+<p class="muted">Энд хадгалсан өөрчлөлт нүүр хуудсанд шууд харагдана. Зөвхөн админ засварлана.</p>
+<form id="siteEditorForm">
+<div id="siteFields" class="admin-grid"></div>
+<div class="admin-grid">
+<div><label>Лого зураг солих</label><input id="siteLogoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></div>
+<div><label>Нүүр хэсгийн арын зураг солих</label><input id="siteHeroFile" type="file" accept="image/png,image/jpeg,image/webp"></div>
+</div>
+<button class="btn gold" style="margin-top:14px">Нүүр хуудасны өөрчлөлтийг хадгалах</button>
+<div id="siteEditorStatus" class="status" role="status">Мэдээлэл ачаалж байна.</div>
+</form>
+</section>
 <div class="admin-grid">
 <div>
-<form id="postForm" class="admin-form"><h3>Нүүр хуудсанд мэдээ нийтлэх</h3><label>Гарчиг</label><input id="postTitle" required maxlength="160"><label>Товч тайлбар</label><textarea id="postSummary" maxlength="500"></textarea><label>Мэдээний агуулга</label><textarea id="postBody" required></textarea><label>Ангилал</label><select id="postCategory"><option>Мэдээ</option><option>Сургалт</option><option>Үйл ажиллагаа</option><option>Зарлал</option></select><label>Зурагны URL (заавал биш)</label><input id="postImage" type="url" placeholder="https://..."><button class="btn gold" style="margin-top:12px">Нийтлэх</button></form>
+<form id="postForm" class="admin-form"><h3>Нүүр хуудсанд мэдээ нийтлэх</h3><label>Гарчиг</label><input id="postTitle" required maxlength="160"><label>Товч тайлбар</label><textarea id="postSummary" maxlength="500"></textarea><label>Мэдээний агуулга</label><textarea id="postBody" required></textarea><label>Ангилал</label><select id="postCategory"><option>Мэдээ</option><option>Сургалт</option><option>Үйл ажиллагаа</option><option>Зарлал</option></select><label>Зурагны URL (заавал биш)</label><input id="postImage" type="url" placeholder="https://..."><label>Эсвэл төхөөрөмжөөс зураг оруулах</label><input id="postImageFile" type="file" accept="image/png,image/jpeg,image/webp"><button class="btn gold" style="margin-top:12px">Нийтлэх</button></form>
+<div class="admin-form"><h3>Нийтэлсэн мэдээ засах, устгах</h3><div id="adminPostList" class="empty">Мэдээ ачаалж байна.</div></div>
 <form id="announcementForm" class="admin-form"><h3>Гишүүдэд зарлал хүргэх</h3><label>Гарчиг</label><input id="announcementTitle" required maxlength="160"><label>Мэдээлэл</label><textarea id="announcementBody" required></textarea><button class="btn gold" style="margin-top:12px">Зарлал нийтлэх</button></form>
 <form id="pollForm" class="admin-form"><h3>Санал асуулга үүсгэх</h3><label>Асуулт</label><input id="pollTitle" required maxlength="240"><label>Тайлбар (заавал биш)</label><textarea id="pollDescription"></textarea><label>Сонголтууд (мөр бүрт нэг)</label><textarea id="pollOptions" required placeholder="Тийм&#10;Үгүй&#10;Мэдэхгүй"></textarea><button class="btn gold" style="margin-top:12px">Нийтлэх</button></form>
 </div>
@@ -67,15 +81,94 @@ $("profileStatus").innerHTML="<b>"+esc(p?.full_name||user.email)+"</b><br>Гиш
 const approved=p?.membership_status==="approved",admin=approved&&p?.role==="admin";$("adminPanel").classList.toggle("hidden",!admin);$("adminNav").classList.toggle("hidden",!admin);
 if(!approved){["announcements","polls","googleForms"].forEach(id=>$(id).textContent="Энэ хэсэг зөвхөн баталгаажсан гишүүдэд нээлттэй.");}
 await Promise.all([loadAnnouncements(),loadPolls(),loadForms(),loadEvents()]);
-if(admin)await loadMembers();
+if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();}
 }
 async function loadAnnouncements(){const el=$("announcements");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("announcements").select("title,body,created_at").order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><small class="muted">'+new Date(x.created_at).toLocaleDateString("mn-MN")+'</small><h3>'+esc(x.title)+'</h3><p>'+esc(x.body)+'</p></article>').join("")||'<div class="empty">Одоогоор зарлал алга.</div>'}
 async function loadPolls(){const el=$("polls");if(!profile||profile.membership_status!=="approved")return;const {data:polls,error}=await db.from("polls").select("id,title,description,closes_at").eq("is_published",true).order("created_at",{ascending:false});if(error){el.textContent=error.message;return}el.innerHTML="";for(const p of polls||[]){const [{data:opts,error:oe},{data:myVotes}]=await Promise.all([db.from("poll_options").select("id,option_text").eq("poll_id",p.id),db.from("poll_votes").select("option_id").eq("poll_id",p.id).eq("user_id",user.id)]);const f=document.createElement("form");f.className="item";const already=(myVotes||[]).length>0,closed=p.closes_at&&new Date(p.closes_at)<new Date();f.innerHTML='<h3>'+esc(p.title)+'</h3><p>'+esc(p.description||"")+'</p>'+((opts||[]).map(o=>'<label class="poll-option"><input type="radio" name="opt" value="'+esc(o.id)+'" '+(already?"disabled":"")+' required> '+esc(o.option_text)+'</label>').join(""))+'<button class="btn secondary" '+(already||closed?"disabled":"")+'>'+(already?"Санал өгсөн":closed?"Хаагдсан":"Санал өгөх")+'</button><div class="muted" aria-live="polite">'+(already?"Таны санал бүртгэгдсэн.":closed?"Санал авах хугацаа дууссан.":oe?esc(oe.message):"")+'</div>';f.onsubmit=async e=>{e.preventDefault();const chosen=f.querySelector("input:checked");if(!chosen)return;const {error}=await db.from("poll_votes").insert({poll_id:p.id,option_id:chosen.value,user_id:user.id});if(error)f.querySelector(".muted").textContent=error.code==="23505"?"Та энэ санал асуулгад өмнө нь санал өгсөн байна.":error.message;else{f.querySelector(".muted").textContent="Таны санал амжилттай бүртгэгдлээ.";f.querySelectorAll("input,button").forEach(x=>x.disabled=true);f.querySelector("button").textContent="Санал өгсөн"}};el.append(f)}if(!polls?.length)el.innerHTML='<div class="empty">Одоогоор идэвхтэй санал асуулга алга.</div>'}
 async function loadForms(){const el=$("googleForms");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("google_forms_links").select("title,form_url,created_at").eq("is_published",true).order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><h3>'+esc(x.title)+'</h3><a class="btn secondary" target="_blank" rel="noopener noreferrer" href="'+esc(x.form_url)+'">Google Forms нээх ↗</a></article>').join("")||'<div class="empty">Одоогоор нийтлэгдсэн Google Forms байхгүй.</div>'}
 async function loadEvents(){const el=$("events");const {data,error}=await db.from("activity_events").select("id,title,description,location,starts_at,registration_deadline").eq("is_published",true).order("starts_at",{ascending:true});if(error){el.textContent=error.message;return}el.innerHTML="";for(const ev of data||[]){const card=document.createElement("article");card.className="item";const date=ev.starts_at?new Date(ev.starts_at).toLocaleString("mn-MN"):"Огноо зарлаагүй";card.innerHTML='<h3>'+esc(ev.title)+'</h3><p>'+esc(ev.description||"")+'</p><p><b>Хэзээ:</b> '+esc(date)+'<br><b>Байршил:</b> '+esc(ev.location||"Тодорхойгүй")+'</p>';if(profile?.membership_status==="approved"){const btn=document.createElement("button");btn.className="btn secondary";btn.textContent="Оролцохоор бүртгүүлэх";btn.onclick=async()=>{btn.disabled=true;const {error}=await db.from("event_registrations").insert({event_id:ev.id,user_id:user.id});btn.textContent=error?(error.code==="23505"?"Өмнө бүртгүүлсэн":"Алдаа гарлаа"):"Бүртгэл амжилттай";};card.append(btn)}else{const p=document.createElement("p");p.className="muted";p.textContent="Бүртгүүлэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.";card.append(p)}el.append(card)}if(!data?.length)el.innerHTML='<div class="empty">Одоогоор арга хэмжээний мэдээлэл алга.</div>'}
 async function loadMembers(){const el=$("memberList");const {data,error}=await db.from("profiles").select("id,full_name,member_code,role,membership_status,created_at").order("created_at",{ascending:false});if(error){el.textContent=error.message;return}el.innerHTML="";for(const m of data||[]){const row=document.createElement("div");row.className="member-row";const details=document.createElement("div");details.innerHTML="<b>"+esc(m.full_name||"Нэргүй гишүүн")+"</b><small>"+esc(m.member_code||"")+" · "+esc(m.role)+" · "+esc(statusText[m.membership_status]||m.membership_status)+"</small>";const controls=document.createElement("div");controls.className="member-actions";const select=document.createElement("select");select.innerHTML='<option value="pending">Хүлээгдэж буй</option><option value="approved">Батлах</option><option value="rejected">Татгалзах</option><option value="suspended">Түр зогсоох</option>';select.value=m.membership_status;const save=document.createElement("button");save.className="btn secondary";save.textContent="Хадгалах";save.onclick=async()=>{save.disabled=true;const {error}=await db.from("profiles").update({membership_status:select.value}).eq("id",m.id);save.disabled=false;if(error)alert(error.message);else{alert("Гишүүний төлөв шинэчлэгдлээ.");await loadMembers()}};controls.append(select,save);row.append(details,controls);el.append(row)}if(!data?.length)el.textContent="Бүртгэлтэй гишүүн алга."}
+
+const siteFieldDefs=[
+ ["top_tagline","Дээд мөрийн бичвэр","text"],
+ ["brand_title","Сайтын нэр","text"],
+ ["brand_subtitle","Сайтын тайлбар","text"],
+ ["nav_home","Цэс: Нүүр","text"],["nav_about","Цэс: Хөтөлбөр","text"],["nav_activities","Цэс: Үйл ажиллагаа","text"],["nav_news","Цэс: Мэдээ","text"],["nav_learning","Цэс: Сургалт","text"],["nav_contact","Цэс: Холбоо барих","text"],["nav_members","Цэс: Гишүүдийн булан","text"],
+ ["hero_eyebrow","Нүүр хэсгийн жижиг гарчиг","text"],["hero_title","Нүүр хэсгийн гол гарчиг","textarea"],["hero_body","Нүүр хэсгийн тайлбар","textarea"],["hero_primary","Нүүр хэсгийн үндсэн товч","text"],["hero_secondary","Нүүр хэсгийн хоёр дахь товч","text"],
+ ["stat_1_title","Онцлох 1 — гарчиг","text"],["stat_1_body","Онцлох 1 — тайлбар","text"],["stat_2_title","Онцлох 2 — гарчиг","text"],["stat_2_body","Онцлох 2 — тайлбар","text"],["stat_3_title","Онцлох 3 — гарчиг","text"],["stat_3_body","Онцлох 3 — тайлбар","text"],
+ ["about_eyebrow","Хөтөлбөр — жижиг гарчиг","text"],["about_title","Хөтөлбөр — гол гарчиг","text"],["about_intro","Хөтөлбөр — эхний тайлбар","textarea"],["about_detail","Хөтөлбөр — дэлгэрэнгүй тайлбар","textarea"],["quote","Онцлох эшлэл","textarea"],
+ ["pillars_title","Дөрвөн чиглэлийн гарчиг","text"],["activities_title","Үйл ажиллагааны гарчиг","text"],["news_title","Мэдээний хэсгийн гарчиг","text"],["video_title","Видео хэсгийн гарчиг","text"],["partners_title","Хамтрагчдын хэсгийн гарчиг","text"],
+ ["cta_eyebrow","Холбоо барих — жижиг гарчиг","text"],["cta_title","Холбоо барих — гол гарчиг","text"],["cta_body","Холбоо барих — тайлбар","textarea"],["contact_email","Холбоо барих и-мэйл","text"],["contact_phone","Холбоо барих утас","text"]
+];
+let siteSettingsId=null,siteSettings={};
+function renderSiteFields(values){
+ const wrap=$("siteFields");wrap.innerHTML="";
+ for(const [key,label,type] of siteFieldDefs){
+  const box=document.createElement("div");const lab=document.createElement("label");lab.textContent=label;
+  const input=document.createElement(type==="textarea"?"textarea":"input");if(type!=="textarea")input.type="text";input.id="site_"+key;input.value=values[key]||"";input.maxLength=5000;
+  box.append(lab,input);wrap.append(box);
+ }
+}
+async function loadSiteEditor(){
+ const status=$("siteEditorStatus");status.textContent="Мэдээлэл ачаалж байна.";
+ const {data,error}=await db.from("posts").select("id,body").eq("slug","__site_content__").maybeSingle();
+ if(error||!data){status.textContent="Сайтын мэдээлэл ачаалж чадсангүй: "+(error?.message||"Тохиргооны мөр олдсонгүй.");status.className="status bad";return}
+ siteSettingsId=data.id;try{siteSettings=JSON.parse(data.body||"{}")}catch{siteSettings={}}
+ renderSiteFields(siteSettings);status.textContent="Нүүр хуудасны мэдээлэл ачааллаа.";status.className="status good";
+}
+async function uploadSiteImage(file,folder){
+ if(!file)return null;
+ if(!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type))throw new Error("Зөвхөн PNG, JPG, WEBP эсвэл SVG зураг оруулна уу.");
+ if(file.size>10*1024*1024)throw new Error("Зургийн хэмжээ 10MB-аас бага байх ёстой.");
+ const ext=(file.name.split(".").pop()||"png").toLowerCase().replace(/[^a-z0-9]/g,"");
+ const path=folder+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
+ const {error}=await db.storage.from("site-assets").upload(path,file,{contentType:file.type,upsert:false});
+ if(error)throw error;
+ return db.storage.from("site-assets").getPublicUrl(path).data.publicUrl;
+}
+$("siteEditorForm").onsubmit=async e=>{
+ e.preventDefault();const btn=e.target.querySelector("button[type=submit],button:not([type])");btn.disabled=true;
+ const status=$("siteEditorStatus");status.textContent="Хадгалж байна…";status.className="status";
+ try{
+  const next={...siteSettings};
+  for(const [key] of siteFieldDefs)next[key]=$("site_"+key).value.trim();
+  const logo=await uploadSiteImage($("siteLogoFile").files[0],"logo");if(logo)next.logo_url=logo;
+  const hero=await uploadSiteImage($("siteHeroFile").files[0],"hero");if(hero)next.hero_image_url=hero;
+  const {error}=await db.from("posts").update({body:JSON.stringify(next),updated_at:new Date().toISOString()}).eq("id",siteSettingsId);
+  if(error)throw error;
+  siteSettings=next;e.target.reset();renderSiteFields(siteSettings);
+  status.textContent="Амжилттай хадгаллаа. Нүүр хуудсыг дахин нээхэд өөрчлөлт харагдана.";status.className="status good";
+ }catch(err){status.textContent="Хадгалахад алдаа гарлаа: "+err.message;status.className="status bad"}finally{btn.disabled=false}
+};
+async function loadAdminPosts(){
+ const el=$("adminPostList");if(!el)return;
+ const {data,error}=await db.from("posts").select("id,title,summary,body,category,cover_image_url,status").neq("slug","__site_content__").order("created_at",{ascending:false}).limit(50);
+ if(error){el.textContent=error.message;return}el.innerHTML="";
+ for(const post of data||[]){
+  const row=document.createElement("div");row.className="item";
+  const title=document.createElement("b");title.textContent=post.title;
+  const edit=document.createElement("button");edit.type="button";edit.className="btn secondary";edit.textContent="Засах";
+  const del=document.createElement("button");del.type="button";del.className="btn danger";del.textContent="Устгах";
+  const controls=document.createElement("div");controls.className="row";controls.append(edit,del);
+  const fields=document.createElement("div");fields.className="hidden";
+  fields.innerHTML='<label>Гарчиг</label><input class="edit-title"><label>Товч тайлбар</label><textarea class="edit-summary"></textarea><label>Агуулга</label><textarea class="edit-body"></textarea><label>Ангилал</label><input class="edit-category"><label>Зургийн URL</label><input class="edit-image" type="url"><label>Шинэ зураг оруулах</label><input class="edit-file" type="file" accept="image/png,image/jpeg,image/webp"><label>Төлөв</label><select class="edit-status"><option value="published">Нийтлэх</option><option value="draft">Ноорог</option></select><button type="button" class="btn gold save-edit">Өөрчлөлт хадгалах</button>';
+  fields.querySelector(".edit-title").value=post.title;fields.querySelector(".edit-summary").value=post.summary||"";fields.querySelector(".edit-body").value=post.body;fields.querySelector(".edit-category").value=post.category;fields.querySelector(".edit-image").value=post.cover_image_url||"";fields.querySelector(".edit-status").value=post.status;
+  edit.onclick=()=>fields.classList.toggle("hidden");
+  fields.querySelector(".save-edit").onclick=async()=>{
+   const b=fields.querySelector(".save-edit");b.disabled=true;
+   try{let image=fields.querySelector(".edit-image").value.trim()||null;const file=fields.querySelector(".edit-file").files[0];if(file)image=await uploadSiteImage(file,"posts");
+    const {error}=await db.from("posts").update({title:fields.querySelector(".edit-title").value.trim(),summary:fields.querySelector(".edit-summary").value.trim(),body:fields.querySelector(".edit-body").value.trim(),category:fields.querySelector(".edit-category").value.trim(),cover_image_url:image,status:fields.querySelector(".edit-status").value,published_at:fields.querySelector(".edit-status").value==="published"?(post.status==="published"?undefined:new Date().toISOString()):null,updated_at:new Date().toISOString()}).eq("id",post.id);
+    if(error)throw error;alert("Мэдээ шинэчлэгдлээ.");await loadAdminPosts();
+   }catch(err){alert("Засахад алдаа гарлаа: "+err.message)}finally{b.disabled=false}
+  };
+  del.onclick=async()=>{if(!confirm("Энэ мэдээг устгах уу?"))return;const {error}=await db.from("posts").delete().eq("id",post.id);if(error)alert(error.message);else await loadAdminPosts()};
+  row.append(title,controls,fields);el.append(row);
+ }
+ if(!data?.length)el.textContent="Мэдээ одоогоор алга.";
+}
+
 async function adminInsert(table,values,form,after){const {error}=await db.from(table).insert(values);if(error){alert("Нийтлэхэд алдаа гарлаа: "+error.message);return}alert("Амжилттай нийтлэгдлээ.");form.reset();if(after)await after()}
-$("postForm").onsubmit=async e=>{e.preventDefault();await adminInsert("posts",{title:$("postTitle").value.trim(),summary:$("postSummary").value.trim(),body:$("postBody").value.trim(),category:$("postCategory").value,cover_image_url:$("postImage").value.trim()||null,status:"published",published_at:new Date().toISOString(),author_id:user.id},e.target)};
+$("postForm").onsubmit=async e=>{e.preventDefault();try{let image=$("postImage").value.trim()||null;const file=$("postImageFile").files[0];if(file)image=await uploadSiteImage(file,"posts");await adminInsert("posts",{title:$("postTitle").value.trim(),summary:$("postSummary").value.trim(),body:$("postBody").value.trim(),category:$("postCategory").value,cover_image_url:image,status:"published",published_at:new Date().toISOString(),author_id:user.id},e.target,loadAdminPosts)}catch(err){alert("Зураг оруулахад алдаа гарлаа: "+err.message)}};
 $("announcementForm").onsubmit=async e=>{e.preventDefault();await adminInsert("announcements",{title:$("announcementTitle").value.trim(),body:$("announcementBody").value.trim(),created_by:user.id},e.target,loadAnnouncements)};
 $("pollForm").onsubmit=async e=>{e.preventDefault();const options=$("pollOptions").value.split("\n").map(x=>x.trim()).filter(Boolean);if(options.length<2){alert("Хамгийн багадаа хоёр сонголт оруулна уу.");return}const {data,error}=await db.from("polls").insert({title:$("pollTitle").value.trim(),description:$("pollDescription").value.trim(),is_published:false,created_by:user.id}).select("id").single();if(error){alert(error.message);return}const inserted=await db.from("poll_options").insert(options.map(option_text=>({poll_id:data.id,option_text})));if(inserted.error){alert(inserted.error.message);return}const published=await db.from("polls").update({is_published:true}).eq("id",data.id);if(published.error){alert(published.error.message);return}alert("Санал асуулга нийтлэгдлээ.");e.target.reset();await loadPolls()};
 $("googleFormForm").onsubmit=async e=>{e.preventDefault();const url=$("googleUrl").value.trim();if(!/^https:\/\/docs\.google\.com\/forms\//.test(url)){alert("Google Forms-ийн хүчинтэй холбоос оруулна уу.");return}await adminInsert("google_forms_links",{title:$("googleTitle").value.trim(),form_url:url,audience:"members",created_by:user.id},e.target,loadForms)};
