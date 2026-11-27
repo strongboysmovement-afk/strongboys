@@ -48,7 +48,8 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-if(!window.supabase){$("authMessage").textContent="Нэвтрэлтийн үйлчилгээ ачаалсангүй. Интернэт холболтоо шалгаад хуудсыг дахин нээнэ үү.";throw new Error("Supabase client library did not load");}\nconst db=window.supabase.createClient("https://abfqilamcajzdlamrrfs.supabase.co","sb_publishable_aHhBHFnEvuYsnxerEaFywQ_toRHrdZ5");
+if(!window.supabase){$("authMessage").textContent="Нэвтрэлтийн үйлчилгээ ачаалсангүй. Интернэт холболтоо шалгаад хуудсыг дахин нээнэ үү.";throw new Error("Supabase client library did not load");}
+const db=window.supabase.createClient("https://abfqilamcajzdlamrrfs.supabase.co","sb_publishable_aHhBHFnEvuYsnxerEaFywQ_toRHrdZ5");
 let mode="login",user=null,profile=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
