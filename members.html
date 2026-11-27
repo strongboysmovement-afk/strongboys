@@ -120,10 +120,22 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
  header:has(.head.is-compact){top:5px;padding-bottom:5px}
 }
 
+
+.chat-messages{height:360px;overflow:auto;padding:12px;border:1px solid var(--line);border-radius:14px;background:#f7f9fc;display:flex;flex-direction:column;gap:10px}
+.chat-message{max-width:88%;align-self:flex-start;background:white;border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:10px 13px;box-shadow:0 3px 12px #102b4e08}
+.chat-message.mine{align-self:flex-end;background:#eaf1f8;border-radius:14px 14px 4px 14px}
+.chat-message b{display:block;color:var(--navy);font-size:12px;margin-bottom:3px}
+.chat-message p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-message small{display:block;color:var(--muted);font-size:10px;margin-top:5px;text-align:right}
+.chat-compose{display:flex;gap:9px;align-items:flex-end;margin-top:12px}
+.chat-compose textarea{flex:1;min-height:48px}
+.chat-compose button{flex:none}
+.report-file{display:inline-block;margin:5px 6px 0 0;font-size:12px;color:#174b7a;text-decoration:underline;overflow-wrap:anywhere}
+@media(max-width:560px){.chat-messages{height:55vh;min-height:260px;max-height:440px}.chat-compose{align-items:stretch}.chat-compose button{min-width:88px}.chat-message{max-width:94%}}
 </style>
 </head>
 <body>
-<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav><a href="./index.html">Нүүр хуудас</a><a href="#memberArea">Гишүүний хэсэг</a><a href="#pollArea">Санал асуулга</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
+<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav><a href="./index.html">Нүүр хуудас</a><a href="#memberArea">Гишүүний хэсэг</a><a href="#pollArea">Санал асуулга</a><a href="#communityArea">Тайлан, чат</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
 <main class="wrap">
 <div class="intro"><h1>Гишүүдийн булан</h1><p>Нэг дороос бүртгэлээ удирдаж, зарлал уншиж, санал асуулгад оролцож, арга хэмжээнд бүртгүүлнэ.</p></div>
 <div class="layout">
@@ -141,6 +153,32 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
 <section class="box" id="pollArea"><h2>Санал асуулга</h2><div id="polls" class="muted">Баталгаажсан гишүүд санал өгнө.</div></section>
 <section class="box"><h2>Google Forms</h2><div id="googleForms" class="muted">Баталгаажсан гишүүдэд зориулсан холбоосууд энд харагдана.</div></section>
 <section class="box"><h2>Үйл ажиллагаа, арга хэмжээ</h2><div id="events" class="muted">Одоогоор арга хэмжээний мэдээлэл алга.</div></section>
+
+<section class="box" id="communityArea">
+ <h2>Тайлан илгээх</h2>
+ <p class="muted">Үйл ажиллагааны тайлан, санал хүсэлт болон холбогдох зураг, PDF, Word, Excel, PowerPoint, видео, аудио зэрэг файлаа хавсаргана. Тайланг зөвхөн та болон админ удирдлага харна.</p>
+ <form id="memberReportForm">
+  <label>Тайлангийн гарчиг</label><input id="reportTitle" required maxlength="180" placeholder="Жишээ: 11-р сарын үйл ажиллагааны тайлан">
+  <label>Тайлбар, тайлангийн агуулга</label><textarea id="reportContent" placeholder="Хийсэн ажил, үр дүн, оролцогчдын тоо, санал хүсэлтээ бичнэ үү."></textarea>
+  <label>Зураг, баримт бичиг болон бусад файл хавсаргах (нэг файл 25MB хүртэл)</label>
+  <input id="reportFiles" type="file" multiple>
+  <p class="muted">Олон файл зэрэг сонгож болно. Хувийн нууцтай мэдээлэл, бусдын зөвшөөрөлгүй зураг бүү оруулаарай.</p>
+  <button class="btn gold" id="reportSubmit">Тайлан илгээх</button>
+  <div id="reportStatus" class="status" role="status">Тайлан илгээхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.</div>
+ </form>
+ <h3 style="color:var(--navy);font-size:16px;margin:22px 0 8px">Миний тайлангууд</h3>
+ <div id="memberReports" class="empty">Нэвтэрсний дараа тайлангууд харагдана.</div>
+</section>
+<section class="box" id="memberChatArea">
+ <h2>Гишүүдийн чат</h2>
+ <p class="muted">Баталгаажсан гишүүд хоорондоо мэдээлэл, асуулт, зар мэдээ солилцох нээлттэй групп чат.</p>
+ <div id="chatMessages" class="chat-messages"><div class="empty">Чат үзэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.</div></div>
+ <form id="memberChatForm" class="chat-compose">
+  <textarea id="chatMessage" maxlength="2000" rows="2" placeholder="Мессежээ бичнэ үү…" required></textarea>
+  <button class="btn gold" id="chatSend">Илгээх</button>
+ </form>
+ <div id="chatStatus" class="muted" aria-live="polite">Зөв харилцаж, бусдын хувийн мэдээллийг хамгаална уу.</div>
+</section>
 <section class="box hidden" id="adminPanel">
 <h2>Админ удирдлага</h2><div class="status good">Админ эрх баталгаажлаа. Эндээс сайт дахь мэдээллийг удирдана.</div>
 <section class="admin-form" id="siteEditor">
@@ -193,6 +231,16 @@ const {data:p,error}=await db.from("profiles").select("id,full_name,member_code,
 $("profileStatus").innerHTML="<b>"+esc(p?.full_name||user.email)+"</b><br>Гишүүний код: "+esc(p?.member_code||"Олгогдоогүй")+"<br>Төлөв: "+esc(statusText[p?.membership_status]||"Хүлээгдэж байна");
 const approved=p?.membership_status==="approved",admin=approved&&p?.role==="admin";$("adminPanel").classList.toggle("hidden",!admin);$("adminNav").classList.toggle("hidden",!admin);
 if(!approved){["announcements","polls","googleForms"].forEach(id=>$(id).textContent="Энэ хэсэг зөвхөн баталгаажсан гишүүдэд нээлттэй.");}
+if(!approved){
+ $("reportStatus").textContent="Тайлан илгээх болон чат ашиглахын тулд админ гишүүнчлэлийг баталгаажуулна.";
+ $("chatMessages").textContent="Баталгаажсан гишүүдийн чат.";
+ $("memberReports").textContent="Баталгаажсан гишүүд тайлан илгээж, өөрийн тайлангаа харна.";
+}else{
+ await Promise.all([loadMemberReports(),loadMemberChat()]);
+ if(!chatChannel){
+  chatChannel=db.channel("member-chat-live").on("postgres_changes",{event:"INSERT",schema:"public",table:"member_chat_messages"},()=>loadMemberChat()).subscribe();
+ }
+}
 await Promise.all([loadAnnouncements(),loadPolls(),loadForms(),loadEvents()]);
 if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();await loadAdminAnnouncements();}
 }
@@ -223,6 +271,79 @@ async function loadAdminAnnouncements(){
 
 async function loadPolls(){const el=$("polls");if(!profile||profile.membership_status!=="approved")return;const {data:polls,error}=await db.from("polls").select("id,title,description,closes_at").eq("is_published",true).order("created_at",{ascending:false});if(error){el.textContent=error.message;return}el.innerHTML="";for(const p of polls||[]){const [{data:opts,error:oe},{data:myVotes}]=await Promise.all([db.from("poll_options").select("id,option_text").eq("poll_id",p.id),db.from("poll_votes").select("option_id").eq("poll_id",p.id).eq("user_id",user.id)]);const f=document.createElement("form");f.className="item";const already=(myVotes||[]).length>0,closed=p.closes_at&&new Date(p.closes_at)<new Date();f.innerHTML='<h3>'+esc(p.title)+'</h3><p>'+esc(p.description||"")+'</p>'+((opts||[]).map(o=>'<label class="poll-option"><input type="radio" name="opt" value="'+esc(o.id)+'" '+(already?"disabled":"")+' required> '+esc(o.option_text)+'</label>').join(""))+'<button class="btn secondary" '+(already||closed?"disabled":"")+'>'+(already?"Санал өгсөн":closed?"Хаагдсан":"Санал өгөх")+'</button><div class="muted" aria-live="polite">'+(already?"Таны санал бүртгэгдсэн.":closed?"Санал авах хугацаа дууссан.":oe?esc(oe.message):"")+'</div>';f.onsubmit=async e=>{e.preventDefault();const chosen=f.querySelector("input:checked");if(!chosen)return;const {error}=await db.from("poll_votes").insert({poll_id:p.id,option_id:chosen.value,user_id:user.id});if(error)f.querySelector(".muted").textContent=error.code==="23505"?"Та энэ санал асуулгад өмнө нь санал өгсөн байна.":error.message;else{f.querySelector(".muted").textContent="Таны санал амжилттай бүртгэгдлээ.";f.querySelectorAll("input,button").forEach(x=>x.disabled=true);f.querySelector("button").textContent="Санал өгсөн"}};el.append(f)}if(!polls?.length)el.innerHTML='<div class="empty">Одоогоор идэвхтэй санал асуулга алга.</div>'}
 async function loadForms(){const el=$("googleForms");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("google_forms_links").select("title,form_url,created_at").eq("is_published",true).order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><h3>'+esc(x.title)+'</h3><a class="btn secondary" target="_blank" rel="noopener noreferrer" href="'+esc(x.form_url)+'">Google Forms нээх ↗</a></article>').join("")||'<div class="empty">Одоогоор нийтлэгдсэн Google Forms байхгүй.</div>'}
+
+let chatChannel=null;
+const reportStatusLabels={received:"Хүлээн авсан",reviewing:"Хянаж байна",completed:"Шийдвэрлэсэн"};
+async function uploadMemberFile(file){
+ if(file.size>25*1024*1024)throw new Error(file.name+" файл 25MB-аас их байна.");
+ const safeName=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]/g,"_").slice(-100)||"file";
+ const path=user.id+"/reports/"+crypto.randomUUID()+"-"+safeName;
+ const {error}=await db.storage.from("member-files").upload(path,file,{contentType:file.type||"application/octet-stream",upsert:false});
+ if(error)throw error;
+ return {path,name:file.name,type:file.type||"Файлын төрөл тодорхойгүй",size:file.size};
+}
+async function loadMemberReports(){
+ const el=$("memberReports");if(!el||!user||profile?.membership_status!=="approved")return;
+ const query=db.from("member_reports").select("id,title,content,attachments,status,created_at,submitted_by").order("created_at",{ascending:false});
+ if(profile.role!=="admin")query.eq("submitted_by",user.id);
+ const {data,error}=await query;
+ if(error){el.textContent="Тайлан ачаалж чадсангүй: "+error.message;return}
+ el.innerHTML="";
+ for(const report of data||[]){
+  const card=document.createElement("article");card.className="item";
+  const h=document.createElement("h3");h.textContent=report.title;
+  const meta=document.createElement("small");meta.className="muted";meta.textContent=new Date(report.created_at).toLocaleString("mn-MN")+" · "+(reportStatusLabels[report.status]||report.status);
+  const body=document.createElement("p");body.textContent=report.content||"Тайлбар оруулаагүй.";
+  card.append(meta,h,body);
+  for(const file of report.attachments||[]){
+   const {data:signed,error:signError}=await db.storage.from("member-files").createSignedUrl(file.path,3600);
+   if(!signError&&signed?.signedUrl){const a=document.createElement("a");a.className="report-file";a.href=signed.signedUrl;a.target="_blank";a.rel="noopener noreferrer";a.textContent="📎 "+file.name;card.append(a)}
+  }
+  if(profile.role==="admin"){
+   const select=document.createElement("select");select.innerHTML='<option value="received">Хүлээн авсан</option><option value="reviewing">Хянаж байна</option><option value="completed">Шийдвэрлэсэн</option>';select.value=report.status;
+   const save=document.createElement("button");save.type="button";save.className="btn secondary";save.textContent="Төлөв хадгалах";
+   save.onclick=async()=>{save.disabled=true;const {error}=await db.from("member_reports").update({status:select.value}).eq("id",report.id);save.disabled=false;if(error)alert(error.message);else await loadMemberReports()};
+   card.append(select,save);
+  }
+  el.append(card);
+ }
+ if(!data?.length)el.textContent="Одоогоор тайлан илгээгээгүй байна.";
+}
+async function loadMemberChat(){
+ const el=$("chatMessages");if(!el||!user||profile?.membership_status!=="approved")return;
+ const {data,error}=await db.from("member_chat_messages").select("id,sender_id,body,created_at,profiles(full_name,member_code)").order("created_at",{ascending:true}).limit(150);
+ if(error){el.textContent="Чат ачаалж чадсангүй: "+error.message;return}
+ el.innerHTML="";
+ for(const m of data||[]){
+  const card=document.createElement("article");card.className="chat-message"+(m.sender_id===user.id?" mine":"");
+  const name=document.createElement("b");name.textContent=m.sender_id===user.id?"Та":(m.profiles?.full_name||"Гишүүн")+(m.profiles?.member_code?" · "+m.profiles.member_code:"");
+  const body=document.createElement("p");body.textContent=m.body;
+  const time=document.createElement("small");time.textContent=new Date(m.created_at).toLocaleString("mn-MN");
+  card.append(name,body,time);el.append(card);
+ }
+ if(!data?.length)el.innerHTML='<div class="empty">Чат одоогоор хоосон байна. Эхний мессежийг та бичээрэй.</div>';
+ el.scrollTop=el.scrollHeight;
+}
+$("memberReportForm").onsubmit=async e=>{
+ e.preventDefault();if(!user||profile?.membership_status!=="approved"){ $("reportStatus").textContent="Тайлан илгээхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.";return}
+ const btn=$("reportSubmit"),status=$("reportStatus"),files=[...$("reportFiles").files];btn.disabled=true;status.className="status";status.textContent="Файлуудыг байршуулж байна…";
+ try{
+  const attachments=[];for(const file of files)attachments.push(await uploadMemberFile(file));
+  const {error}=await db.from("member_reports").insert({submitted_by:user.id,title:$("reportTitle").value.trim(),content:$("reportContent").value.trim(),attachments});
+  if(error)throw error;
+  e.target.reset();status.className="status good";status.textContent="Тайлан болон хавсаргасан файлууд амжилттай илгээгдлээ.";
+  await loadMemberReports();
+ }catch(err){status.className="status bad";status.textContent="Илгээж чадсангүй: "+err.message}
+ finally{btn.disabled=false}
+};
+$("memberChatForm").onsubmit=async e=>{
+ e.preventDefault();const body=$("chatMessage").value.trim();if(!body||!user||profile?.membership_status!=="approved")return;
+ const btn=$("chatSend");btn.disabled=true;
+ const {error}=await db.from("member_chat_messages").insert({sender_id:user.id,body});
+ if(error)$("chatStatus").textContent="Мессеж илгээж чадсангүй: "+error.message;
+ else{$("chatMessage").value="";$("chatStatus").textContent="Илгээгдлээ.";await loadMemberChat()}
+ btn.disabled=false;
+};
 async function loadEvents(){const el=$("events");const {data,error}=await db.from("activity_events").select("id,title,description,location,starts_at,registration_deadline").eq("is_published",true).order("starts_at",{ascending:true});if(error){el.textContent=error.message;return}el.innerHTML="";for(const ev of data||[]){const card=document.createElement("article");card.className="item";const date=ev.starts_at?new Date(ev.starts_at).toLocaleString("mn-MN"):"Огноо зарлаагүй";card.innerHTML='<h3>'+esc(ev.title)+'</h3><p>'+esc(ev.description||"")+'</p><p><b>Хэзээ:</b> '+esc(date)+'<br><b>Байршил:</b> '+esc(ev.location||"Тодорхойгүй")+'</p>';if(profile?.membership_status==="approved"){const btn=document.createElement("button");btn.className="btn secondary";btn.textContent="Оролцохоор бүртгүүлэх";btn.onclick=async()=>{btn.disabled=true;const {error}=await db.from("event_registrations").insert({event_id:ev.id,user_id:user.id});btn.textContent=error?(error.code==="23505"?"Өмнө бүртгүүлсэн":"Алдаа гарлаа"):"Бүртгэл амжилттай";};card.append(btn)}else{const p=document.createElement("p");p.className="muted";p.textContent="Бүртгүүлэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.";card.append(p)}el.append(card)}if(!data?.length)el.innerHTML='<div class="empty">Одоогоор арга хэмжээний мэдээлэл алга.</div>'}
 async function loadMembers(){
  const el=$("memberList");
