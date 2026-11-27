@@ -300,4 +300,13 @@ $("googleFormForm").onsubmit=async e=>{e.preventDefault();const url=$("googleUrl
 $("eventForm").onsubmit=async e=>{e.preventDefault();const localToIso=id=>$(id).value?new Date($(id).value).toISOString():null;await adminInsert("activity_events",{title:$("eventTitle").value.trim(),description:$("eventDescription").value.trim(),location:$("eventLocation").value.trim(),starts_at:localToIso("eventStarts"),registration_deadline:localToIso("eventDeadline"),is_published:true,created_by:user.id},e.target,loadEvents)};
 db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm").classList.add("hidden");$("forgotPassword").classList.add("hidden");$("recoveryForm").classList.remove("hidden");msg("Шинэ нууц үгээ оруулна уу.")}setTimeout(refresh,0)});refresh();
 </script>
+<script>
+(function(){
+ const nodes=document.querySelectorAll('main .intro, main .layout > *, main #memberArea > .box');
+ if(!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches){nodes.forEach(el=>el.classList.add('is-visible'));return;}
+ nodes.forEach((el,i)=>{el.setAttribute('data-reveal','');el.style.transitionDelay=(Math.min(i%4,3)*65)+'ms';});
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.12,rootMargin:'0px 0px -35px 0px'});
+ nodes.forEach(el=>observer.observe(el));
+})();
+</script>
 </body></html>
