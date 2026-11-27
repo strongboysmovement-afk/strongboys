@@ -87,7 +87,42 @@ async function loadAnnouncements(){const el=$("announcements");if(!profile||prof
 async function loadPolls(){const el=$("polls");if(!profile||profile.membership_status!=="approved")return;const {data:polls,error}=await db.from("polls").select("id,title,description,closes_at").eq("is_published",true).order("created_at",{ascending:false});if(error){el.textContent=error.message;return}el.innerHTML="";for(const p of polls||[]){const [{data:opts,error:oe},{data:myVotes}]=await Promise.all([db.from("poll_options").select("id,option_text").eq("poll_id",p.id),db.from("poll_votes").select("option_id").eq("poll_id",p.id).eq("user_id",user.id)]);const f=document.createElement("form");f.className="item";const already=(myVotes||[]).length>0,closed=p.closes_at&&new Date(p.closes_at)<new Date();f.innerHTML='<h3>'+esc(p.title)+'</h3><p>'+esc(p.description||"")+'</p>'+((opts||[]).map(o=>'<label class="poll-option"><input type="radio" name="opt" value="'+esc(o.id)+'" '+(already?"disabled":"")+' required> '+esc(o.option_text)+'</label>').join(""))+'<button class="btn secondary" '+(already||closed?"disabled":"")+'>'+(already?"Санал өгсөн":closed?"Хаагдсан":"Санал өгөх")+'</button><div class="muted" aria-live="polite">'+(already?"Таны санал бүртгэгдсэн.":closed?"Санал авах хугацаа дууссан.":oe?esc(oe.message):"")+'</div>';f.onsubmit=async e=>{e.preventDefault();const chosen=f.querySelector("input:checked");if(!chosen)return;const {error}=await db.from("poll_votes").insert({poll_id:p.id,option_id:chosen.value,user_id:user.id});if(error)f.querySelector(".muted").textContent=error.code==="23505"?"Та энэ санал асуулгад өмнө нь санал өгсөн байна.":error.message;else{f.querySelector(".muted").textContent="Таны санал амжилттай бүртгэгдлээ.";f.querySelectorAll("input,button").forEach(x=>x.disabled=true);f.querySelector("button").textContent="Санал өгсөн"}};el.append(f)}if(!polls?.length)el.innerHTML='<div class="empty">Одоогоор идэвхтэй санал асуулга алга.</div>'}
 async function loadForms(){const el=$("googleForms");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("google_forms_links").select("title,form_url,created_at").eq("is_published",true).order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><h3>'+esc(x.title)+'</h3><a class="btn secondary" target="_blank" rel="noopener noreferrer" href="'+esc(x.form_url)+'">Google Forms нээх ↗</a></article>').join("")||'<div class="empty">Одоогоор нийтлэгдсэн Google Forms байхгүй.</div>'}
 async function loadEvents(){const el=$("events");const {data,error}=await db.from("activity_events").select("id,title,description,location,starts_at,registration_deadline").eq("is_published",true).order("starts_at",{ascending:true});if(error){el.textContent=error.message;return}el.innerHTML="";for(const ev of data||[]){const card=document.createElement("article");card.className="item";const date=ev.starts_at?new Date(ev.starts_at).toLocaleString("mn-MN"):"Огноо зарлаагүй";card.innerHTML='<h3>'+esc(ev.title)+'</h3><p>'+esc(ev.description||"")+'</p><p><b>Хэзээ:</b> '+esc(date)+'<br><b>Байршил:</b> '+esc(ev.location||"Тодорхойгүй")+'</p>';if(profile?.membership_status==="approved"){const btn=document.createElement("button");btn.className="btn secondary";btn.textContent="Оролцохоор бүртгүүлэх";btn.onclick=async()=>{btn.disabled=true;const {error}=await db.from("event_registrations").insert({event_id:ev.id,user_id:user.id});btn.textContent=error?(error.code==="23505"?"Өмнө бүртгүүлсэн":"Алдаа гарлаа"):"Бүртгэл амжилттай";};card.append(btn)}else{const p=document.createElement("p");p.className="muted";p.textContent="Бүртгүүлэхийн тулд баталгаажсан гишүүнээр нэвтэрнэ үү.";card.append(p)}el.append(card)}if(!data?.length)el.innerHTML='<div class="empty">Одоогоор арга хэмжээний мэдээлэл алга.</div>'}
-async function loadMembers(){const el=$("memberList");const {data,error}=await db.from("profiles").select("id,full_name,member_code,role,membership_status,created_at").order("created_at",{ascending:false});if(error){el.textContent=error.message;return}el.innerHTML="";for(const m of data||[]){const row=document.createElement("div");row.className="member-row";const details=document.createElement("div");details.innerHTML="<b>"+esc(m.full_name||"Нэргүй гишүүн")+"</b><small>"+esc(m.member_code||"")+" · "+esc(m.role)+" · "+esc(statusText[m.membership_status]||m.membership_status)+"</small>";const controls=document.createElement("div");controls.className="member-actions";const select=document.createElement("select");select.innerHTML='<option value="pending">Хүлээгдэж буй</option><option value="approved">Батлах</option><option value="rejected">Татгалзах</option><option value="suspended">Түр зогсоох</option>';select.value=m.membership_status;const save=document.createElement("button");save.className="btn secondary";save.textContent="Хадгалах";save.onclick=async()=>{save.disabled=true;const {error}=await db.from("profiles").update({membership_status:select.value}).eq("id",m.id);save.disabled=false;if(error)alert(error.message);else{alert("Гишүүний төлөв шинэчлэгдлээ.");await loadMembers()}};controls.append(select,save);row.append(details,controls);el.append(row)}if(!data?.length)el.textContent="Бүртгэлтэй гишүүн алга."}
+async function loadMembers(){
+ const el=$("memberList");
+ const {data,error}=await db.from("profiles").select("id,full_name,member_code,role,membership_status,created_at").order("created_at",{ascending:false});
+ if(error){el.textContent=error.message;return}
+ el.innerHTML="";
+ for(const m of data||[]){
+  const row=document.createElement("div");row.className="member-row";
+  const details=document.createElement("div");
+  details.innerHTML="<b>"+esc(m.full_name||"Нэргүй гишүүн")+"</b><small>"+esc(m.member_code||"")+" · "+esc(m.role)+" · "+esc(statusText[m.membership_status]||m.membership_status)+"</small>";
+  const controls=document.createElement("div");controls.className="member-actions";
+  const statusSelect=document.createElement("select");
+  statusSelect.innerHTML="<option value='pending'>Хүлээгдэж буй</option><option value='approved'>Батлах</option><option value='rejected'>Татгалзах</option><option value='suspended'>Түр зогсоох</option>";
+  statusSelect.value=m.membership_status;
+  const statusSave=document.createElement("button");statusSave.className="btn secondary";statusSave.textContent="Төлөв хадгалах";
+  statusSave.onclick=async()=>{statusSave.disabled=true;const {error}=await db.from("profiles").update({membership_status:statusSelect.value}).eq("id",m.id);statusSave.disabled=false;if(error)alert(error.message);else{alert("Гишүүний төлөв шинэчлэгдлээ.");await loadMembers()}};
+  controls.append(statusSelect,statusSave);
+  const roleSelect=document.createElement("select");
+  roleSelect.innerHTML="<option value='member'>Энгийн гишүүн</option><option value='admin'>Админ</option>";
+  roleSelect.value=m.role;
+  const roleSave=document.createElement("button");roleSave.className="btn gold";roleSave.textContent="Эрх хадгалах";
+  if(m.id===user.id){roleSelect.disabled=true;roleSave.disabled=true;roleSave.title="Өөрийн эрхийг өөрчлөх боломжгүй"}
+  roleSave.onclick=async()=>{
+   if(m.membership_status!=="approved"){alert("Эхлээд энэ гишүүний төлөвийг Батлах болгож хадгална уу.");return}
+   const action=roleSelect.value==="admin"?"админ болгох":"админ эрхийг нь цуцлах";
+   if(!confirm((m.full_name||"Энэ гишүүн")+"-ийг "+action+" уу?"))return;
+   roleSave.disabled=true;
+   const {error}=await db.rpc("set_member_role",{p_user_id:m.id,p_role:roleSelect.value});
+   roleSave.disabled=false;
+   if(error)alert("Эрх өөрчилж чадсангүй: "+error.message);
+   else{alert("Гишүүний эрх шинэчлэгдлээ.");await loadMembers()}
+  };
+  controls.append(roleSelect,roleSave);
+  row.append(details,controls);el.append(row);
+ }
+ if(!data?.length)el.textContent="Бүртгэлтэй гишүүн алга.";
+}
 
 const siteFieldDefs=[
  ["top_tagline","Дээд мөрийн бичвэр","text"],
