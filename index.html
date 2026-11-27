@@ -64,9 +64,23 @@ footer{background:#091d33;color:#dbe5ef;padding:45px 0 20px}.foot{display:grid;g
 <section class="cta" id="contact"><div class="wrap"><div><div class="eyebrow">Хамтдаа өөрчлөлт бүтээе</div><h2>Хүндлэлээс хүч эхэлнэ.</h2><p>Хөтөлбөрийн талаар мэдээлэл авах, хамтран ажиллах, санал хүсэлтээ илэрхийлэх бол бидэнтэй холбогдоорой.</p></div><a class="btn gold" href="mailto:strongboysmovement@gmail.com">И-мэйл илгээх</a></div></section>
 </main>
 <footer><div class="wrap"><div class="foot"><div><a class="brand" href="#home"><span class="mark">ХХ</span><span><b>ХҮЧИРХЭГ ХӨВГҮҮД</b><small>ӨСВӨРИЙН ХӨВГҮҮДИЙН ХӨГЖЛИЙН ХӨТӨЛБӨР</small></span></a><p>Өөрийгөө таньж, бусдыг хүндэтгэж, хамтдаа хөгжицгөөе.</p></div><div><h3>Цэс</h3><a href="#about">Хөтөлбөрийн тухай</a><a href="#activities">Үйл ажиллагаа</a><a href="#news">Мэдээ, мэдээлэл</a><a href="#learning">Сургалт, боловсрол</a></div><div><h3>Холбоо барих</h3><a href="mailto:strongboysmovement@gmail.com">strongboysmovement@gmail.com</a><a href="#contact">Хамтын ажиллагааны санал</a></div></div><div class="copyright">© 2026 Хүчирхэг хөвгүүд. Бүх эрх хуулиар хамгаалагдана.</div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const menu=document.getElementById('menu'),nav=document.getElementById('nav');
 menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'×':'☰'});
 nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰'}));
+const newsGrid=document.getElementById('newsGrid');
+const escapeHtml=function(s){return String(s??'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+(async function(){
+ try{
+  const client=window.supabase.createClient("https://abfqilamcajzdlamrrfs.supabase.co","sb_publishable_aHhBHFnEvuYsnxerEaFywQ_toRHrdZ5");
+  const result=await client.from('posts').select('id,title,summary,body,category,cover_image_url,published_at').eq('status','published').order('published_at',{ascending:false}).limit(9);
+  if(result.error||!result.data||!result.data.length)return;
+  newsGrid.innerHTML=result.data.map(function(p,i){
+   const art=p.cover_image_url?'<img src="'+escapeHtml(p.cover_image_url)+'" alt="" loading="lazy" style="width:100%;height:150px;object-fit:cover">':'<div class="news-art">'+escapeHtml(p.category||'МЭДЭЭ')+' · '+String(i+1).padStart(2,'0')+'</div>';
+   return '<article class="news-card">'+art+'<div class="news-body"><small>'+escapeHtml(p.category||'МЭДЭЭ')+(p.published_at?' · '+new Date(p.published_at).toLocaleDateString('mn-MN'):'')+'</small><h3>'+escapeHtml(p.title)+'</h3><p>'+escapeHtml(p.summary||'')+'</p><details style="margin-top:12px"><summary style="color:#174b7a;cursor:pointer;font-size:13px;font-weight:700">Дэлгэрэнгүй унших</summary><p style="margin-top:10px;white-space:pre-wrap">'+escapeHtml(p.body)+'</p></details></div></article>';
+  }).join('');
+ }catch(e){console.warn('News feed unavailable',e)}
+})();
 </script>
 </body></html>
