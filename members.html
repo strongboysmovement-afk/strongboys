@@ -209,7 +209,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#9db4c9;box-sh
  <p class="muted">Сургууль, клуб үүсгэж, менежер эсвэл тэргүүний эрхийг зөвхөн админ олгоно. Сургуулийн менежер тухайн сургуулийн клубүүдийг мөн удирдана.</p>
  <form id="organizationAdminForm">
   <div class="row"><div><label>Байгууллагын төрөл</label><select id="adminOrgType"><option value="school">Сургууль</option><option value="club">Клуб</option></select></div><div><label>Нэр</label><input id="adminOrgName" required maxlength="180" placeholder="Сургуулийн / клубийн нэр"></div></div>
-  <div id="adminOrgSchoolWrap" class="hidden"><label>Харьяалах сургууль</label><select id="adminOrgSchool"></select></div>
+  <div id="adminOrgSchoolWrap" class="hidden"><label>Харьяалах сургууль</label><select id="adminOrgSchool" required></select></div>
   <div id="adminOrgManagerWrap"><label>Сургуулийн менежер</label><select id="adminOrgManager"><option value="">Эрх олгохгүй</option></select></div>
   <div id="adminOrgLeaderWrap" class="hidden"><label>Клубийн тэргүүн</label><select id="adminOrgLeader"><option value="">Эрх олгохгүй</option></select></div>
   <button class="btn gold" style="margin-top:12px">Байгууллага үүсгэх</button>
@@ -401,7 +401,7 @@ async function loadAdminOrganizations(){
 $("organizationAdminForm").onsubmit=async e=>{
  e.preventDefault();if(profile?.role!=="admin")return;
  const type=$("adminOrgType").value,name=$("adminOrgName").value.trim();
- const row={name,org_type:type,parent_school_id:type==="club"?$("adminOrgSchool").value:null,manager_user_id:type==="school"?($("adminOrgManager").value||null):null,leader_user_id:type==="club"?($("adminOrgLeader").value||null):null};
+ if(type==="club"&&!$("adminOrgSchool").value){$("organizationAdminStatus").className="status bad";$("organizationAdminStatus").textContent="Эхлээд сургууль үүсгээд клубээ түүнд харьяалуулна уу.";return}const row={name,org_type:type,parent_school_id:type==="club"?$("adminOrgSchool").value:null,manager_user_id:type==="school"?($("adminOrgManager").value||null):null,leader_user_id:type==="club"?($("adminOrgLeader").value||null):null};
  const {error}=await db.from("organizations").insert(row);
  if(error){$("organizationAdminStatus").className="status bad";$("organizationAdminStatus").textContent="Үүсгэж чадсангүй: "+error.message;return}
  e.target.reset();setOrgAdminType();$("organizationAdminStatus").className="status good";$("organizationAdminStatus").textContent="Байгууллага амжилттай үүслээ.";await loadAdminOrganizations();await loadOrganizationArea();
