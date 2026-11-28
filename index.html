@@ -211,6 +211,58 @@ footer{line-height:1.7}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
+<style id="mobile-animated-hero">
+.hero{isolation:isolate;min-height:560px;background:linear-gradient(115deg,#0a2341 0%,#174b7a 58%,#a66e54 100%)!important}
+.hero-scene{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,rgba(7,23,43,.16),rgba(7,23,43,.3))}
+.hero-scene:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,24,45,.74),rgba(7,24,45,.28) 60%,rgba(7,24,45,.12)),linear-gradient(0deg,rgba(4,17,32,.42),transparent 58%)}
+.scene-landscape{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.scene-sun{position:absolute;z-index:0;width:190px;height:190px;left:62%;top:48%;border-radius:50%;background:radial-gradient(circle,rgba(255,224,157,.92) 0,rgba(255,190,108,.36) 26%,rgba(255,175,96,0) 72%);filter:blur(5px);animation:sun-breathe 7s ease-in-out infinite}
+.scene-cloud{position:absolute;z-index:1;width:360px;height:100px;border-radius:50%;filter:blur(22px);opacity:.2;background:radial-gradient(ellipse,rgba(255,218,179,.85),rgba(255,218,179,0) 70%)}
+.scene-cloud-a{left:-90px;top:22%;animation:cloud-drift 34s ease-in-out infinite alternate}
+.scene-cloud-b{right:-100px;top:37%;width:460px;opacity:.16;animation:cloud-drift-reverse 42s ease-in-out infinite alternate}
+.scene-birds{transform-origin:center;animation:birds-glide 12s ease-in-out infinite alternate}
+.scene-flag{transform-origin:1280px 250px;animation:flag-sway 4s ease-in-out infinite}
+.hero .wrap{z-index:2}
+.hero:after{z-index:1;pointer-events:none}
+@keyframes cloud-drift{from{transform:translate3d(-3%,0,0)}to{transform:translate3d(14%,9px,0)}}
+@keyframes cloud-drift-reverse{from{transform:translate3d(4%,0,0)}to{transform:translate3d(-12%,-12px,0)}}
+@keyframes sun-breathe{0%,100%{opacity:.65;transform:scale(.94)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes birds-glide{from{transform:translate3d(-10px,5px,0)}to{transform:translate3d(20px,-12px,0)}}
+@keyframes flag-sway{0%,100%{transform:skewY(0deg)}50%{transform:skewY(-2deg)}}
+@media(max-width:760px){
+ header{top:0!important;padding:6px 0!important;background:rgba(8,29,52,.72)!important;backdrop-filter:blur(14px)!important}
+ .head{width:calc(100% - 22px)!important;min-height:64px!important;padding:8px 12px!important;border-radius:15px!important;gap:8px!important}
+ .brand{min-width:0;max-width:calc(100% - 58px);display:flex;align-items:center;gap:9px}
+ .brand span{min-width:0}.brand b,.brand small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .brand b{font-size:12px!important}.brand small{font-size:8px!important;max-width:220px}
+ .menu{flex:0 0 44px;width:44px;height:44px;border-radius:12px!important}
+ nav{top:68px!important;left:11px!important;right:11px!important;max-height:calc(100dvh - 82px);overflow-y:auto;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:8px 14px 14px!important;background:rgba(10,34,60,.98)!important}
+ .hero{min-height:540px!important;padding:0!important}
+ .hero .wrap{padding:78px 0 76px!important;min-height:540px;display:flex!important;flex-direction:column;justify-content:center}
+ .hero h1{font-size:clamp(32px,8.8vw,46px)!important;line-height:1.12!important;max-width:620px}
+ .hero p{font-size:15px!important;line-height:1.7!important;max-width:36rem}
+ .hero .actions{display:grid!important;grid-template-columns:1fr;gap:10px!important;max-width:360px;width:100%}
+ .hero .actions .btn{width:100%!important;min-height:48px}
+ .scene-landscape{width:160%;left:-30%;max-width:none}
+ .scene-sun{left:52%;top:45%;width:140px;height:140px}
+ .scene-cloud{filter:blur(26px);opacity:.14}
+ .stats .wrap,.cards,.activities,.news-grid,.about-grid,.foot{grid-template-columns:1fr!important}
+ .news-tools{display:grid!important;grid-template-columns:1fr!important}
+ .news-tools>*{min-width:0;width:100%}
+ .section-head h2{font-size:clamp(24px,7vw,34px)}
+ .cta .wrap{align-items:stretch!important}
+}
+@media(max-width:420px){
+ .wrap{width:calc(100% - 28px)!important}
+ .hero,.hero .wrap{min-height:520px!important}
+ .hero .wrap{padding:70px 0 66px!important}
+ .hero h1{font-size:clamp(30px,9vw,38px)!important}
+ .brand small{max-width:190px}
+}
+@media(prefers-reduced-motion:reduce){
+ .scene-cloud,.scene-sun,.scene-birds,.scene-flag{animation:none!important}
+}
+</style>
 </head>
 <body>
 <div class="top"><div class="wrap"><span data-site-key="top_tagline">ХҮҮХЭД, ЗАЛУУЧУУДЫН ХӨГЖИЛ · ЭРҮҮЛ ХАРИЛЦАА · ТЭГШ БОЛОМЖ</span><span data-site-key="top_right_label">ХҮЧИРХЭГ ХӨВГҮҮД ХӨТӨЛБӨР</span></div></div>
@@ -220,7 +272,29 @@ footer{line-height:1.7}
 <nav id="nav"><a href="#home" data-site-key="nav_home">Нүүр</a><a href="#about" data-site-key="nav_about">Хөтөлбөр</a><a href="#activities" data-site-key="nav_activities">Үйл ажиллагаа</a><a href="#news" data-site-key="nav_news">Мэдээ</a><a href="#learning" data-site-key="nav_learning">Сургалт</a><a href="#contact" data-site-key="nav_contact">Холбоо барих</a><a class="nav-member" href="./members.html" data-site-key="nav_members">Гишүүдийн булан</a><a class="nav-member" href="./clubs-schools.html">Сургууль, клубийн булан</a></nav>
 </div></header>
 <main>
-<section class="hero" id="home" data-site-hero><div class="wrap">
+<section class="hero" id="home" data-site-hero>
+<div class="hero-scene" aria-hidden="true">
+ <div class="scene-sun"></div><div class="scene-cloud scene-cloud-a"></div><div class="scene-cloud scene-cloud-b"></div>
+ <svg class="scene-landscape" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <defs>
+   <linearGradient id="sceneSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#153b68"/><stop offset=".62" stop-color="#28618b"/><stop offset="1" stop-color="#f1a45f"/></linearGradient>
+   <linearGradient id="scenePeak" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#496c8b"/><stop offset="1" stop-color="#0b2039"/></linearGradient>
+   <linearGradient id="sceneFlag" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#c51f35"/><stop offset=".34" stop-color="#c51f35"/><stop offset=".34" stop-color="#1764a0"/><stop offset=".67" stop-color="#1764a0"/><stop offset=".67" stop-color="#c51f35"/><stop offset="1" stop-color="#9e172b"/></linearGradient>
+  </defs>
+  <rect width="1600" height="700" fill="url(#sceneSky)" opacity=".28"/>
+  <path d="M0 475 160 360 260 430 420 300 570 455 720 330 860 460 1020 315 1180 455 1320 335 1470 440 1600 350V700H0Z" fill="#243f5e" opacity=".72"/>
+  <path d="M0 550 170 430 280 500 450 365 600 520 760 390 920 530 1080 390 1240 520 1400 405 1600 520V700H0Z" fill="url(#scenePeak)"/>
+  <path d="m420 365 30 45 38-30 42 58-80-25-30 18-45-28zM1040 390l42 45 38-35 42 58-85-25-40 18-38-28zM1330 335l36 45 30-28 40 55-75-20-38 15-34-30z" fill="#dce9f3" opacity=".56"/>
+  <path d="M0 610q230-70 420 0t390 0 400 0 390-5v95H0Z" fill="#071a30" opacity=".78"/>
+  <g class="scene-birds" fill="none" stroke="#071a30" stroke-width="5" stroke-linecap="round"><path d="M570 205q22-23 44 0 22-23 44 0"/><path d="M690 165q16-18 32 0 16-18 32 0"/><path d="M820 230q18-20 36 0 18-20 36 0"/></g>
+  <g class="scene-flag">
+   <path d="M1280 245v330" stroke="#d6e0e8" stroke-width="8"/>
+   <path d="M1285 250q85-24 175 8v126q-85-34-175-8Z" fill="url(#sceneFlag)" stroke="#f3c66c" stroke-opacity=".45" stroke-width="3"/>
+   <g fill="#e9bd57" transform="translate(1302 273) scale(.78)"><path d="M20 0q-8 8 0 16 8-8 0-16M20 17v54M5 31h30M8 40h24M12 49h16M6 61h28v8H6z" fill="none" stroke="#e9bd57" stroke-width="4"/><circle cx="20" cy="26" r="5"/></g>
+  </g>
+ </svg>
+</div>
+<div class="wrap">
 <div class="eyebrow" data-site-key="hero_eyebrow">Өөрийгөө тань · Хүндэл · Хөгж</div>
 <h1 data-site-key="hero_title" style="white-space:pre-line">Хүчирхэг байна гэдэг\nбусдыг дийлэх биш.</h1>
 <p data-site-key="hero_body">Өөрийгөө ойлгож, сэтгэл хөдлөлөө зөв илэрхийлж, бусдыг хүндэтгэн, хариуцлагатай сонголт хийхээс жинхэнэ хүч эхэлнэ.</p>
