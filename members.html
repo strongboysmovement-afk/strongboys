@@ -964,7 +964,7 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
  function move(id,target){
   const el=document.getElementById(id);if(!el)return;
   let node=el;
-  if(['adminPostList','adminAnnouncementList','memberList','adminCourseList'].includes(id))node=el.closest('.admin-form')||el;
+  if(['adminPostList','adminAnnouncementList','adminEventList','memberList','adminCourseList'].includes(id))node=el.closest('.admin-form')||el;
   pagesById[target].grid.append(node);
  }
  move('siteEditor','site');
