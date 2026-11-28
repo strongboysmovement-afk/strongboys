@@ -412,6 +412,21 @@ textarea{min-height:100px}
 .profile-form .status{margin-top:12px}
 @media(max-width:600px){.profile-editor{grid-template-columns:1fr;gap:14px}.profile-avatar-panel{max-width:none}.member-profile-avatar{width:116px;height:116px}.profile-form .row{flex-direction:column;gap:0}}
 </style>
+<style id="foundation-portal-design">
+:root{--navy:#06395d;--blue:#07527c;--gold:#d8b56e;--ink:#17364c;--muted:#64798b;--line:#dce6ee;--paper:#f4f7fb}
+body{background:var(--paper);font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+header{position:sticky;top:9px;z-index:30;width:min(1320px,calc(100% - 28px));margin:9px auto 0;padding:0;background:rgba(255,255,255,.95);color:var(--navy);border:1px solid #e3ebf1;border-radius:999px;box-shadow:0 12px 30px #092c3e16;backdrop-filter:blur(15px)}
+.head{min-height:70px;padding:0 16px}.brand{color:var(--navy)}.brand small{color:#718293}
+nav{gap:5px;flex-wrap:wrap;justify-content:flex-end}nav a{color:#405568;padding:8px 11px;border-radius:999px;font-size:12px}nav a:hover{color:var(--navy);background:#e8f4fa}nav a.nav-admin{background:var(--navy);color:#fff}
+main{padding-top:34px!important}.intro{padding:12px 0 18px}.intro h1{font-size:clamp(30px,4vw,43px);letter-spacing:-.035em}.layout{gap:22px}
+.panel,.box{border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 28px #0b2d4709;padding:24px}.panel{top:95px}.box{margin-bottom:20px}
+.panel h2,.box h2{color:var(--navy);font-size:21px;letter-spacing:-.02em}
+.btn,.tabs button{border-radius:999px}.btn.gold{background:#00a9df;color:#062f49}.btn.secondary{background:#edf4f8;color:var(--navy)}
+input,textarea,select{border:1px solid #d4e0e9;border-radius:11px;padding:12px 13px;background:#fbfdff}input:focus,textarea:focus,select:focus{outline:2px solid #a8def0;border-color:#55b6d7}
+.item,.admin-form{border-color:var(--line)}.member-profile-avatar{border-color:#fff;box-shadow:0 8px 24px #0b2d471a}
+@media(max-width:900px){header{border-radius:22px}.head{align-items:flex-start;flex-direction:column;padding:12px 15px}nav{justify-content:flex-start;max-height:120px;overflow:auto;width:100%}.layout{grid-template-columns:1fr}.panel{position:static}}
+@media(max-width:560px){header{width:calc(100% - 16px);margin-top:7px}.brand img{width:48px;height:40px}.head{gap:8px}nav{gap:4px}nav a{font-size:11px;padding:7px 9px}main{padding-top:24px!important}.panel,.box{padding:17px;border-radius:16px}.intro h1{font-size:30px}}
+</style>
 </head>
 <body>
 <header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav aria-label="Гишүүдийн үндсэн цэс"><a href="./index.html">Нүүр</a><a href="#dashboardArea">Миний самбар</a><a href="#calendarArea">Календарь</a><a href="#learningArea">Сургалт</a><a href="#announcementArea">Зарлал</a><a href="#pollArea">Санал асуулга</a><a href="#formsArea">Маягт</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="./clubs-schools.html">Сургууль, клуб</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
