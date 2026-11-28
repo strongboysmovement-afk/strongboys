@@ -171,6 +171,43 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
+<style id="site-visual-system">
+:root{--site-radius:16px;--site-shadow:0 12px 32px rgba(16,43,78,.07)}
+body{letter-spacing:-.008em}
+.wrap{width:min(var(--max,1160px),calc(100% - 40px))}
+header{backdrop-filter:blur(14px)}
+nav a,.btn,.card,.news-card,.activity{transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+section{scroll-margin-top:100px}
+.section-head{margin-bottom:30px}
+.section-head h2{max-width:680px}
+.card,.news-card,.activity{border-radius:var(--site-radius);overflow:hidden}
+.card{padding:25px;box-shadow:0 4px 16px rgba(16,43,78,.035)}
+.news-card{border:1px solid var(--line);box-shadow:0 4px 16px rgba(16,43,78,.035)}
+.news-body{padding:22px}
+.activity{border:1px solid var(--line);border-top:3px solid var(--gold)}
+input,textarea,select{max-width:100%;min-height:44px;border-radius:9px}
+textarea{min-height:110px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #d5b56f99;outline-offset:2px}
+footer{line-height:1.7}
+@media(max-width:760px){
+ .wrap{width:calc(100% - 28px)}
+ section{padding:52px 0}
+ .hero .wrap{padding:64px 0 68px}
+ .stats .wrap{grid-template-columns:1fr;gap:13px;padding:18px 0}
+ .stat,.stat:first-child{padding:0;border:0}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .activities,.news-grid{grid-template-columns:1fr;gap:12px}
+ .about-grid{grid-template-columns:1fr;gap:24px}
+ .section-head{margin-bottom:22px}
+}
+@media(max-width:480px){
+ .cards{grid-template-columns:1fr}
+ .hero h1{font-size:clamp(32px,10vw,44px)}
+ .hero p{font-size:15px}
+ .actions .btn{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
 <div class="top"><div class="wrap"><span data-site-key="top_tagline">ХҮҮХЭД, ЗАЛУУЧУУДЫН ХӨГЖИЛ · ЭРҮҮЛ ХАРИЛЦАА · ТЭГШ БОЛОМЖ</span><span data-site-key="top_right_label">ХҮЧИРХЭГ ХӨВГҮҮД ХӨТӨЛБӨР</span></div></div>
