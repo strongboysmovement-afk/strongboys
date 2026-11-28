@@ -487,6 +487,7 @@ textarea{min-height:100px}
 <div>
 <form id="googleFormForm" class="admin-form"><h3>Google Forms холбоос нэмэх</h3><label>Гарчиг</label><input id="googleTitle" required><label>Google Forms URL</label><input id="googleUrl" type="url" required placeholder="https://docs.google.com/forms/..."><button class="btn gold" style="margin-top:12px">Холбоос нийтлэх</button></form>
 <form id="eventForm" class="admin-form"><h3>Арга хэмжээ нэмэх</h3><label>Нэр</label><input id="eventTitle" required><label>Тайлбар</label><textarea id="eventDescription"></textarea><label>Байршил</label><input id="eventLocation"><label>Эхлэх огноо, цаг</label><input id="eventStarts" type="datetime-local"><label>Бүртгэл хаах хугацаа</label><input id="eventDeadline" type="datetime-local"><button class="btn gold" style="margin-top:12px">Арга хэмжээ нийтлэх</button></form>
+ <div class="admin-form"><h3>Нийтэлсэн арга хэмжээ удирдах</h3><p class="muted">Арга хэмжээг устгахад тухайн арга хэмжээнд бүртгүүлсэн оролцогчдын бүртгэл мөн устна.</p><div id="adminEventList" class="empty">Арга хэмжээ ачаалж байна.</div></div>
 <form id="courseForm" class="admin-form"><h3>Шинэ сургалт үүсгэх</h3><label>Сургалтын нэр</label><input id="courseTitle" required maxlength="160"><label>Тайлбар</label><textarea id="courseDescription" maxlength="1200"></textarea><div class="row"><div><label>Чиглэл</label><select id="courseCategory"><option>Өөрийгөө таних</option><option>Сэтгэл хөдлөл ба сэтгэл зүй</option><option>Эрүүл, хүндлэлтэй харилцаа</option><option>Жендэрийн тэгш байдал</option><option>Манлайлал</option></select></div><div><label>Түвшин</label><select id="courseLevel"><option>Анхан шат</option><option>Дунд шат</option><option>Ахисан шат</option></select></div></div><label>Үргэлжлэх хугацаа (минут)</label><input id="courseMinutes" type="number" min="1" max="10000" value="30" required><label>Нүүр зурагны URL (заавал биш)</label><input id="courseCover" type="url" placeholder="https://..."><label class="poll-option"><input id="coursePublish" type="checkbox"> Үүсгэсний дараа нийтлэх</label><button class="btn gold" style="margin-top:12px">Сургалт үүсгэх</button></form>
 <form id="lessonForm" class="admin-form"><h3>Сургалтад хичээл нэмэх</h3><label>Сургалт сонгох</label><select id="lessonCourse" required><option value="">Сургалт сонгоно уу</option></select><label>Хичээлийн нэр</label><input id="lessonTitle" required maxlength="160"><label>Хичээлийн материал</label><textarea id="lessonContent" required placeholder="Хичээлийн агуулга, тайлбар, даалгавар..."></textarea><label>Видео холбоос (заавал биш)</label><input id="lessonVideo" type="url" placeholder="https://..."><label>Дараалал</label><input id="lessonOrder" type="number" value="1" min="1"><label class="poll-option"><input id="lessonPublish" type="checkbox" checked> Нийтлэх</label><button class="btn gold" style="margin-top:12px">Хичээл нэмэх</button></form><div class="admin-form"><h3>Сургалтын жагсаалт</h3><div id="adminCourseList" class="empty">Сургалтууд ачаалж байна.</div></div>
 <div class="admin-form"><h3>Гишүүдийн хүсэлт, эрхийн удирдлага</h3><p class="muted">Бүртгүүлсэн хүний төлөвийг баталгаажуулах эсвэл цуцлах боломжтой.</p><div id="memberList" class="empty">Гишүүдийн жагсаалт ачаалж байна.</div></div>
@@ -529,9 +530,36 @@ if(!approved){
  }
 }
 await Promise.all([loadAnnouncements(),loadPolls(),loadForms(),loadEvents(),loadLearningCourses(),loadDashboard()]);
-if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();await loadAdminAnnouncements();await loadAdminCourses();}
+if(admin){await loadMembers();await loadSiteEditor();await loadAdminPosts();await loadAdminAnnouncements();await loadAdminEvents();await loadAdminCourses();}
 }
 async function loadAnnouncements(){const el=$("announcements");if(!profile||profile.membership_status!=="approved")return;const {data,error}=await db.from("announcements").select("title,body,created_at").order("created_at",{ascending:false});el.innerHTML=error?esc(error.message):(data||[]).map(x=>'<article class="item"><small class="muted">'+new Date(x.created_at).toLocaleDateString("mn-MN")+'</small><h3>'+esc(x.title)+'</h3><p>'+esc(x.body)+'</p></article>').join("")||'<div class="empty">Одоогоор зарлал алга.</div>'}
+async function loadAdminEvents(){
+ const el=$("adminEventList");if(!el||profile?.role!=="admin"||profile?.membership_status!=="approved")return;
+ const {data,error}=await db.from("activity_events").select("id,title,description,location,starts_at,registration_deadline,is_published").order("starts_at",{ascending:false});
+ if(error){el.textContent="Арга хэмжээ ачаалж чадсангүй: "+error.message;return}
+ el.innerHTML="";
+ for(const ev of data||[]){
+  const row=document.createElement("div");row.className="item";
+  const title=document.createElement("b");title.textContent=ev.title||"Нэргүй арга хэмжээ";
+  const meta=document.createElement("p");meta.className="muted";meta.textContent=(ev.starts_at?new Date(ev.starts_at).toLocaleString("mn-MN"):"Огноо тодорхойгүй")+" · "+(ev.location||"Байршил тодорхойгүй");
+  const del=document.createElement("button");del.type="button";del.className="btn danger";del.textContent="Устгах";
+  del.onclick=async()=>{
+   if(!confirm("“"+(ev.title||"Нэргүй арга хэмжээ")+"” арга хэмжээг устгах уу? Энэ арга хэмжээнд бүртгүүлсэн бүх оролцогчийн бүртгэл мөн устна. Энэ үйлдлийг буцаах боломжгүй."))return;
+   del.disabled=true;
+   try{
+    const {error:regError}=await db.from("event_registrations").delete().eq("event_id",ev.id);
+    if(regError)throw regError;
+    const {error:eventError}=await db.from("activity_events").delete().eq("id",ev.id);
+    if(eventError)throw eventError;
+    alert("Арга хэмжээ устгагдлаа.");
+    await Promise.all([loadAdminEvents(),loadEvents(),loadDashboard()]);
+   }catch(err){alert("Арга хэмжээ устгаж чадсангүй: "+err.message);del.disabled=false}
+  };
+  const actions=document.createElement("div");actions.className="row";actions.append(del);
+  row.append(title,meta,actions);el.append(row);
+ }
+ if(!data?.length)el.textContent="Одоогоор арга хэмжээ алга.";
+}
 async function loadAdminAnnouncements(){
  const el=$("adminAnnouncementList");if(!el||profile?.role!=="admin"||profile?.membership_status!=="approved")return;
  const {data,error}=await db.from("announcements").select("id,title,body,created_at").order("created_at",{ascending:false});
@@ -943,7 +971,7 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
  move('postForm','news');move('adminPostList','news');
  move('announcementForm','announcements');move('adminAnnouncementList','announcements');
  move('memberList','members');
- move('pollForm','polls');move('googleFormForm','forms');move('eventForm','events');
+ move('pollForm','polls');move('googleFormForm','forms');move('eventForm','events');move('adminEventList','events');
  move('courseForm','learning');move('lessonForm','learning');move('adminCourseList','learning');
  const overview=pagesById.home.page;overview.className='admin-page';overview.hidden=false;
  overview.innerHTML='<div class="admin-overview-intro"><div><div class="admin-kicker">WORKSPACE</div><h3>Тавтай морилно уу</h3><p>Удирдах үйлдлээ сонгоно уу. Цэс бүр тусдаа ажлын цонх нээнэ.</p></div></div><div class="admin-quick-grid">'+pages.slice(1).map(p=>'<button type="button" class="admin-quick-card" data-open="'+p.id+'"><span>'+p.icon+'</span><b>'+p.label+'</b><small>'+p.hint+'</small><i>Нээх →</i></button>').join('')+'</div>';
