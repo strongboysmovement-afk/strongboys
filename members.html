@@ -344,6 +344,62 @@ button{min-height:42px}
 }
 @media(prefers-reduced-motion:reduce){.admin-page,.admin-quick-card{animation:none;transition:none}}
 </style>
+<style id="member-portal-visual-system">
+:root{--portal-radius:15px;--portal-shadow:0 8px 24px rgba(16,43,78,.055)}
+body{font-family:Inter,Arial,sans-serif;line-height:1.65}
+.wrap{width:min(1200px,calc(100% - 36px))}
+header{position:sticky;top:0;z-index:30;box-shadow:0 5px 20px #06182a20}
+header .head{align-items:center}
+header nav{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:75%;gap:7px;padding:4px 0;scrollbar-width:thin}
+header nav a{flex:0 0 auto;padding:9px 11px;border-radius:8px;font-size:11px;background:#ffffff0c}
+header nav a:hover{background:#ffffff18;color:#f1d99e}
+main{padding:30px 0 60px}
+.intro{padding:23px 26px;margin-bottom:20px;border:1px solid #e3eaf0;border-radius:17px;background:linear-gradient(115deg,#fff,#f7f9fc);box-shadow:var(--portal-shadow)}
+.intro h1{font-size:clamp(25px,3vw,34px);letter-spacing:-.035em}
+.layout{grid-template-columns:290px minmax(0,1fr);gap:18px}
+.panel,.box{border-radius:var(--portal-radius);box-shadow:var(--portal-shadow);padding:20px}
+.panel{top:100px}
+.box{margin-bottom:15px}
+.box h2{font-size:19px;letter-spacing:-.025em}
+#memberArea{min-width:0}
+.portal-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--portal-shadow)}
+.portal-nav button{min-height:43px;border:1px solid transparent;border-radius:9px;padding:8px 9px;background:#f3f6f9;color:#42566c;font:700 11px Inter,Arial;cursor:pointer}
+.portal-nav button:hover{border-color:#d5b56f}
+.portal-nav button.active{background:var(--navy);color:#fff;box-shadow:0 4px 12px #102b4e20}
+.portal-section-hidden{display:none!important}
+.dashboard-welcome{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.dashboard-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+.dashboard-stats article{padding:14px;border:1px solid #e5ebf1;border-radius:12px;background:#f8fafc}
+.dashboard-stats b{font-size:25px;color:var(--navy)}
+.dashboard-shortcuts{display:flex;flex-wrap:wrap;gap:8px}
+.dashboard-shortcuts a{padding:9px 12px;border:1px solid #e1e8ef;border-radius:9px;color:#174b7a;font-size:12px;font-weight:700}
+.item,.member-row{border-color:#e8edf2}
+.event-calendar,.learning-grid{min-width:0}
+input,textarea,select{min-height:43px;border-radius:9px}
+textarea{min-height:100px}
+.btn{min-height:42px;border-radius:9px}
+.admin-page-grid>.admin-form{box-shadow:none}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.panel{position:static}.portal-nav{grid-template-columns:repeat(4,minmax(0,1fr))}header nav{max-width:100%;width:100%}}
+@media(max-width:600px){
+ .wrap{width:calc(100% - 24px)}
+ header{padding:10px 0}
+ header .head{align-items:flex-start;flex-direction:column;gap:9px}
+ header nav{display:flex;max-width:100%;width:100%;overflow-x:auto;flex-wrap:nowrap}
+ header nav a{min-height:38px;padding:8px 10px}
+ main{padding:18px 0 40px}
+ .intro{padding:17px;margin-bottom:13px}
+ .layout{gap:12px}
+ .panel,.box{padding:15px;border-radius:12px}
+ .portal-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px}
+ .portal-nav button{min-height:41px;font-size:10px}
+ .dashboard-stats{grid-template-columns:1fr;gap:7px}
+ .dashboard-stats article{display:flex;align-items:center;justify-content:space-between;padding:11px}
+ .dashboard-stats b{font-size:20px}
+ .dashboard-shortcuts{display:grid;grid-template-columns:1fr}
+ .dashboard-shortcuts a{display:flex;justify-content:space-between}
+ .member-row{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 <header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav aria-label="Гишүүдийн үндсэн цэс"><a href="./index.html">Нүүр</a><a href="#dashboardArea">Миний самбар</a><a href="#calendarArea">Календарь</a><a href="#learningArea">Сургалт</a><a href="#announcementArea">Зарлал</a><a href="#pollArea">Санал асуулга</a><a href="#formsArea">Маягт</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="./clubs-schools.html">Сургууль, клуб</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
@@ -901,4 +957,23 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
 })();
 </script>
 
+<script id="member-portal-navigation">
+(function(){
+ const root=document.getElementById('memberArea');if(!root||root.dataset.portalNavReady)return;root.dataset.portalNavReady='1';
+ const ids=['dashboardArea','calendarArea','learningArea','announcementArea','pollArea','formsArea','communityArea','memberChatArea'];
+ const labels=['Миний самбар','Календарь','Сургалт','Зарлал','Санал асуулга','Маягт','Тайлан','Мессеж'];
+ const nav=document.createElement('nav');nav.className='portal-nav';nav.setAttribute('aria-label','Гишүүдийн хэсгүүд');
+ ids.forEach((id,i)=>{const b=document.createElement('button');b.type='button';b.textContent=labels[i];b.dataset.target=id;b.addEventListener('click',()=>show(id));nav.append(b)});
+ const first=document.getElementById(ids[0]);if(first)root.insertBefore(nav,first);
+ function show(id,scroll=false){
+  if(!ids.includes(id))id=ids[0];
+  ids.forEach(x=>{const el=document.getElementById(x);if(el)el.classList.toggle('portal-section-hidden',x!==id)});
+  nav.querySelectorAll('button').forEach(b=>{const active=b.dataset.target===id;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')});
+  if(scroll){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+ }
+ document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(ids.includes(id)){e.preventDefault();history.replaceState(null,'','#'+id);show(id,true)}});
+ window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(ids.includes(id))show(id,true)});
+ show(ids.includes(location.hash.slice(1))?location.hash.slice(1):ids[0],false);
+})();
+</script>
 </body></html>
