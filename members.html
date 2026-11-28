@@ -254,10 +254,35 @@ button{min-height:42px}
  .row .btn,.actions .btn{width:auto;flex:1 1 130px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-</style>
+/* Member dashboard, calendar and learning centre */
+.member-dashboard{background:linear-gradient(135deg,#fff 0%,#f3f7fb 100%)}
+.dashboard-welcome,.section-title-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.dashboard-welcome h2,.section-title-row h2{margin:4px 0;color:var(--navy)}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.16em;color:#9a7a39}
+.dashboard-mark{width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:var(--navy);color:#e8d29a;font-weight:800}
+.dashboard-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.dashboard-stats article{padding:16px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.dashboard-stats small,.dashboard-stats b{display:block}.dashboard-stats small{font-size:12px;color:var(--muted)}.dashboard-stats b{font-size:26px;color:var(--navy);margin-top:4px}
+.dashboard-shortcuts{display:flex;gap:9px;flex-wrap:wrap}.dashboard-shortcuts a{padding:10px 13px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--navy);font-size:12px;font-weight:700}.dashboard-shortcuts span{color:#a38445;margin-left:8px}
+.calendar-controls{display:flex;align-items:center;gap:9px}.calendar-controls b{min-width:120px;text-align:center;color:var(--navy);font-size:13px}.calendar-controls .btn{min-width:38px;padding:7px 10px}
+.event-calendar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.event-card{display:grid;grid-template-columns:66px minmax(0,1fr);gap:13px;padding:15px;border:1px solid var(--line);border-radius:13px;background:#fff;min-width:0}
+.event-date{display:flex;flex-direction:column;align-items:center;justify-content:center;align-self:start;min-height:68px;border-radius:10px;background:#edf3f8;color:var(--navy)}
+.event-date b{font-size:25px;line-height:1.1}.event-date small{font-size:10px;text-transform:uppercase;font-weight:800}
+.event-copy{min-width:0}.event-copy h3{margin:0 0 5px;color:var(--navy);font-size:15px}.event-copy p{margin:0 0 7px;font-size:12px;color:var(--muted);white-space:pre-wrap}.event-copy .btn{font-size:11px;padding:7px 11px;min-height:34px}
+.event-status{display:inline-block;margin:0 0 7px;padding:3px 8px;border-radius:30px;background:#edf5ef;color:#27734b;font-size:10px;font-weight:700}
+.learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.learning-card{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff;min-width:0}
+.learning-cover{height:92px;background:linear-gradient(120deg,#102b4e,#315b7e);background-position:center;background-size:cover}
+.learning-body{padding:16px}.learning-body h3{margin:4px 0 7px;color:var(--navy);font-size:17px}.learning-body p{margin:0 0 10px;color:var(--muted);font-size:12px}
+.learning-meta{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.learning-meta span{font-size:10px;padding:4px 8px;border-radius:30px;background:#edf3f8;color:#355675}
+.learning-progress{height:7px;background:#e8eef3;border-radius:20px;overflow:hidden;margin:12px 0 5px}.learning-progress span{display:block;height:100%;background:#c5a45b;border-radius:20px}
+.learning-lessons{margin-top:12px;border-top:1px solid var(--line);padding-top:9px}.lesson-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f5}.lesson-row:last-child{border:0}.lesson-row b{font-size:12px;color:var(--navy)}.lesson-row p{margin:4px 0 0;white-space:pre-wrap}.lesson-row .btn{flex:none;min-height:32px;padding:6px 9px;font-size:10px}.lesson-content{font-size:12px;color:var(--muted);white-space:pre-wrap;margin:6px 0}.course-admin-row{padding:12px 0;border-bottom:1px solid var(--line)}.course-admin-row:last-child{border:0}
+@media(max-width:700px){.dashboard-stats{grid-template-columns:1fr 1fr}.event-calendar,.learning-grid{grid-template-columns:1fr}.dashboard-welcome{align-items:flex-start}.dashboard-mark{width:46px;height:46px}.section-title-row{align-items:flex-start}.calendar-controls{width:100%;justify-content:flex-end}.event-card{grid-template-columns:58px minmax(0,1fr);padding:12px}.dashboard-shortcuts{display:grid;grid-template-columns:1fr}.dashboard-shortcuts a{display:flex;justify-content:space-between}}
+@media(max-width:420px){.dashboard-stats{grid-template-columns:1fr}.dashboard-stats article{padding:12px}.event-card{grid-template-columns:52px minmax(0,1fr);gap:9px}.event-date{min-height:58px}.event-date b{font-size:21px}}</style>
 </head>
 <body>
-<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav aria-label="Гишүүдийн үндсэн цэс"><a href="./index.html">Нүүр</a><a href="#memberArea">Миний мэдээлэл</a><a href="#announcementArea">Зарлал</a><a href="#pollArea">Санал асуулга</a><a href="#formsArea">Маягт</a><a href="#eventsArea">Арга хэмжээ</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="./clubs-schools.html">Сургууль, клуб</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
+<header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav aria-label="Гишүүдийн үндсэн цэс"><a href="./index.html">Нүүр</a><a href="#dashboardArea">Миний самбар</a><a href="#calendarArea">Календарь</a><a href="#learningArea">Сургалт</a><a href="#announcementArea">Зарлал</a><a href="#pollArea">Санал асуулга</a><a href="#formsArea">Маягт</a><a href="#eventsArea">Арга хэмжээ</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="./clubs-schools.html">Сургууль, клуб</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
 <main class="wrap">
 <div class="intro"><h1>Гишүүдийн булан</h1><p>Нэг дороос бүртгэлээ удирдаж, зарлал уншиж, санал асуулгад оролцож, арга хэмжээнд бүртгүүлнэ.</p></div>
 <div class="layout">
@@ -270,11 +295,13 @@ button{min-height:42px}
 <p class="muted">Нууц үг тань хамгаалагдсан нэвтрэлтийн системд хадгалагдана. Нууц үгээ бусдад бүү дамжуулаарай.</p>
 </aside>
 <div id="memberArea">
-<section class="box"><h2>Эхлэх заавар</h2><p class="muted">1. Шинээр орж байгаа бол “Бүртгүүлэх” товчийг сонгоно. 2. И-мэйлээ баталгаажуулна. 3. Дахин нэвтэрч гишүүнчлэлийн хүсэлтээ илгээнэ. Админ баталсны дараа гишүүдийн зарлал, санал асуулга болон бусад хэсэг нээгдэнэ.</p><h2 style="margin-top:18px">Таны гишүүний мэдээлэл</h2><div id="profileStatus" class="status">Нэвтэрсний дараа таны гишүүнчлэлийн төлөв харагдана.</div></section>
+<section class="box member-dashboard" id="dashboardArea"><div class="dashboard-welcome"><div><span class="eyebrow">ГИШҮҮНИЙ ХУВИЙН ОРЧИН</span><h2 id="dashboardGreeting">Тавтай морилно уу</h2><p class="muted">Таны сургалт, оролцоо, шинэ үйл ажиллагаа нэг дор.</p></div><span class="dashboard-mark">SB</span></div><div id="profileStatus" class="status">Нэвтэрсний дараа таны гишүүнчлэлийн төлөв харагдана.</div><div class="dashboard-stats"><article><small>Миний сургалт</small><b id="dashCourses">—</b></article><article><small>Дуусгасан хичээл</small><b id="dashLessons">—</b></article><article><small>Арга хэмжээнд бүртгүүлсэн</small><b id="dashEvents">—</b></article></div><div class="dashboard-shortcuts"><a href="#calendarArea">Календарь харах <span>→</span></a><a href="#learningArea">Сургалтаа үргэлжлүүлэх <span>→</span></a><a href="#announcementArea">Шинэ зарлал <span>→</span></a></div></section>
+<section class="box" id="calendarArea"><div class="section-title-row"><div><span class="eyebrow">ОРОЛЦОО</span><h2>Үйл ажиллагааны календарь</h2><p class="muted">Удахгүй болох сургалт, уулзалт, арга хэмжээг хараад бүртгүүлээрэй.</p></div><div class="calendar-controls"><button type="button" class="btn secondary" id="calendarPrev" aria-label="Өмнөх сар">‹</button><b id="calendarMonth">Календарь</b><button type="button" class="btn secondary" id="calendarNext" aria-label="Дараагийн сар">›</button></div></div><div id="events" class="event-calendar muted">Арга хэмжээ ачаалж байна.</div></section>
+<section class="box" id="learningArea"><div class="section-title-row"><div><span class="eyebrow">ӨӨРИЙГӨӨ ХӨГЖҮҮЛЬЕ</span><h2>Сургалтын төв</h2><p class="muted">Өөрийн хурдаар суралцаж, дуусгасан хичээлээ тэмдэглээрэй.</p></div></div><div id="learningCourses" class="learning-grid muted">Сургалтууд ачаалж байна.</div></section>
 <section class="box" id="announcementArea"><h2>Гишүүдэд зориулсан зарлал</h2><div id="announcements" class="muted">Баталгаажсан гишүүд зарлалыг үзнэ.</div></section>
 <section class="box" id="pollArea"><h2>Санал асуулга</h2><div id="polls" class="muted">Баталгаажсан гишүүд санал өгнө.</div></section>
 <section class="box" id="formsArea"><h2>Google Forms</h2><div id="googleForms" class="muted">Баталгаажсан гишүүдэд зориулсан холбоосууд энд харагдана.</div></section>
-<section class="box" id="eventsArea"><h2>Үйл ажиллагаа, арга хэмжээ</h2><div id="events" class="muted">Одоогоор арга хэмжээний мэдээлэл алга.</div></section>
+
 
 <section class="box" id="communityArea">
  <h2>Тайлан илгээх</h2>
@@ -340,6 +367,8 @@ button{min-height:42px}
 <div>
 <form id="googleFormForm" class="admin-form"><h3>Google Forms холбоос нэмэх</h3><label>Гарчиг</label><input id="googleTitle" required><label>Google Forms URL</label><input id="googleUrl" type="url" required placeholder="https://docs.google.com/forms/..."><button class="btn gold" style="margin-top:12px">Холбоос нийтлэх</button></form>
 <form id="eventForm" class="admin-form"><h3>Арга хэмжээ нэмэх</h3><label>Нэр</label><input id="eventTitle" required><label>Тайлбар</label><textarea id="eventDescription"></textarea><label>Байршил</label><input id="eventLocation"><label>Эхлэх огноо, цаг</label><input id="eventStarts" type="datetime-local"><label>Бүртгэл хаах хугацаа</label><input id="eventDeadline" type="datetime-local"><button class="btn gold" style="margin-top:12px">Арга хэмжээ нийтлэх</button></form>
+<form id="courseForm" class="admin-form"><h3>Шинэ сургалт үүсгэх</h3><label>Сургалтын нэр</label><input id="courseTitle" required maxlength="160"><label>Тайлбар</label><textarea id="courseDescription" maxlength="1200"></textarea><div class="row"><div><label>Чиглэл</label><select id="courseCategory"><option>Өөрийгөө таних</option><option>Сэтгэл хөдлөл ба сэтгэл зүй</option><option>Эрүүл, хүндлэлтэй харилцаа</option><option>Жендэрийн тэгш байдал</option><option>Манлайлал</option></select></div><div><label>Түвшин</label><select id="courseLevel"><option>Анхан шат</option><option>Дунд шат</option><option>Ахисан шат</option></select></div></div><label>Үргэлжлэх хугацаа (минут)</label><input id="courseMinutes" type="number" min="1" max="10000" value="30" required><label>Нүүр зурагны URL (заавал биш)</label><input id="courseCover" type="url" placeholder="https://..."><label class="poll-option"><input id="coursePublish" type="checkbox"> Үүсгэсний дараа нийтлэх</label><button class="btn gold" style="margin-top:12px">Сургалт үүсгэх</button></form>
+<form id="lessonForm" class="admin-form"><h3>Сургалтад хичээл нэмэх</h3><label>Сургалт сонгох</label><select id="lessonCourse" required><option value="">Сургалт сонгоно уу</option></select><label>Хичээлийн нэр</label><input id="lessonTitle" required maxlength="160"><label>Хичээлийн материал</label><textarea id="lessonContent" required placeholder="Хичээлийн агуулга, тайлбар, даалгавар..."></textarea><label>Видео холбоос (заавал биш)</label><input id="lessonVideo" type="url" placeholder="https://..."><label>Дараалал</label><input id="lessonOrder" type="number" value="1" min="1"><label class="poll-option"><input id="lessonPublish" type="checkbox" checked> Нийтлэх</label><button class="btn gold" style="margin-top:12px">Хичээл нэмэх</button></form><div class="admin-form"><h3>Сургалтын жагсаалт</h3><div id="adminCourseList" class="empty">Сургалтууд ачаалж байна.</div></div>
 <div class="admin-form"><h3>Гишүүдийн хүсэлт, эрхийн удирдлага</h3><p class="muted">Бүртгүүлсэн хүний төлөвийг баталгаажуулах эсвэл цуцлах боломжтой.</p><div id="memberList" class="empty">Гишүүдийн жагсаалт ачаалж байна.</div></div>
 </div>
 </div>
@@ -693,7 +722,7 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
   {id:'news',label:'Мэдээ',icon:'▤',hint:'Нүүр хуудсанд мэдээ нийтлэх, өмнөх мэдээг засах эсвэл устгах.',nodes:['postForm','adminPostList']},
   {id:'announcements',label:'Зарлал',icon:'◉',hint:'Зөвхөн гишүүдэд харагдах зарлал нийтлэх, устгах.',nodes:['announcementForm','adminAnnouncementList']},
   {id:'members',label:'Гишүүд',icon:'♙',hint:'Гишүүнчлэлийн хүсэлт батлах, төлөв болон админ эрх удирдах.',nodes:['memberList']},
-  {id:'activities',label:'Үйл ажиллагаа',icon:'▦',hint:'Санал асуулга, Google Forms болон арга хэмжээ нэмэх.',nodes:['pollForm','googleFormForm','eventForm']}
+  {id:'activities',label:'Үйл ажиллагаа',icon:'▦',hint:'Санал асуулга, Google Forms болон арга хэмжээ нэмэх.',nodes:['pollForm','googleFormForm','eventForm']},{id:'learning',label:'Сургалт',icon:'◫',hint:'Сургалтын хөтөлбөр, хичээл үүсгэж, нийтлэх.',nodes:['courseForm','lessonForm','adminCourseList']}
  ];
  const pagesById={};
  pages.forEach((p,index)=>{
@@ -714,7 +743,7 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
  move('postForm','news');move('adminPostList','news');
  move('announcementForm','announcements');move('adminAnnouncementList','announcements');
  move('memberList','members');
- move('pollForm','activities');move('googleFormForm','activities');move('eventForm','activities');
+ move('pollForm','activities');move('googleFormForm','activities');move('eventForm','activities');move('courseForm','learning');move('lessonForm','learning');move('adminCourseList','learning');
  header.append(overview);
  panel.innerHTML='';
  panel.append(header);
