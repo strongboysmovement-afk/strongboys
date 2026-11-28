@@ -400,6 +400,18 @@ textarea{min-height:100px}
  .member-row{grid-template-columns:1fr}
 }
 </style>
+<style id="member-profile-styles">
+.profile-editor{display:grid;grid-template-columns:190px minmax(0,1fr);gap:24px;align-items:start}
+.profile-avatar-panel{display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#f8fafc;text-align:center}
+.member-profile-avatar{width:132px;height:132px;border-radius:50%;object-fit:cover;border:4px solid white;box-shadow:0 5px 18px #102b4e18;background:#e6edf4}
+.profile-avatar-panel label{margin:0;cursor:pointer;text-align:center}
+.profile-avatar-panel small{font-size:11px}
+.profile-form{min-width:0}
+.profile-form .row{gap:12px}
+.profile-form textarea{min-height:78px}
+.profile-form .status{margin-top:12px}
+@media(max-width:600px){.profile-editor{grid-template-columns:1fr;gap:14px}.profile-avatar-panel{max-width:none}.member-profile-avatar{width:116px;height:116px}.profile-form .row{flex-direction:column;gap:0}}
+</style>
 </head>
 <body>
 <header><div class="wrap head"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="Хүчирхэг хөвгүүдийн албан ёсны лого"><span>ХҮЧИРХЭГ ХӨВГҮҮД<small>ГИШҮҮДИЙН ЦАХИМ БУЛАН</small></span></a><nav aria-label="Гишүүдийн үндсэн цэс"><a href="./index.html">Нүүр</a><a href="#dashboardArea">Миний самбар</a><a href="#calendarArea">Календарь</a><a href="#learningArea">Сургалт</a><a href="#announcementArea">Зарлал</a><a href="#pollArea">Санал асуулга</a><a href="#formsArea">Маягт</a><a href="#communityArea">Тайлан</a><a href="#memberChatArea">Мессеж</a><a href="./clubs-schools.html">Сургууль, клуб</a><a href="#adminPanel" id="adminNav" class="nav-admin hidden">Админ удирдлага</a></nav></div></header>
@@ -416,6 +428,30 @@ textarea{min-height:100px}
 </aside>
 <div id="memberArea">
 <section class="box member-dashboard" id="dashboardArea"><div class="dashboard-welcome"><div><span class="eyebrow">ГИШҮҮНИЙ ХУВИЙН ОРЧИН</span><h2 id="dashboardGreeting">Тавтай морилно уу</h2><p class="muted">Таны сургалт, оролцоо, шинэ үйл ажиллагаа нэг дор.</p></div><span class="dashboard-mark">SB</span></div><div id="profileStatus" class="status">Нэвтэрсний дараа таны гишүүнчлэлийн төлөв харагдана.</div><div class="dashboard-stats"><article><small>Миний сургалт</small><b id="dashCourses">—</b></article><article><small>Дуусгасан хичээл</small><b id="dashLessons">—</b></article><article><small>Арга хэмжээнд бүртгүүлсэн</small><b id="dashEvents">—</b></article></div><div class="dashboard-shortcuts"><a href="#calendarArea">Календарь харах <span>→</span></a><a href="#learningArea">Сургалтаа үргэлжлүүлэх <span>→</span></a><a href="#announcementArea">Шинэ зарлал <span>→</span></a></div></section>
+<section class="box" id="memberProfileArea">
+ <div class="section-title-row"><div><span class="eyebrow">МИНИЙ БҮРТГЭЛ</span><h2>Миний профайл</h2><p class="muted">Хувийн мэдээллээ шинэчилж, профайл зургаа солих боломжтой. Энд оруулсан утас, сургууль зэрэг мэдээллийг зөвхөн та өөрөө харах боломжтой.</p></div></div>
+ <div class="profile-editor">
+  <div class="profile-avatar-panel">
+   <img id="memberProfileAvatar" class="member-profile-avatar" alt="Миний профайл зураг" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23e6edf4'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%2395a9bc'/%3E%3Cpath d='M20 112c3-25 19-38 40-38s37 13 40 38' fill='%2395a9bc'/%3E%3C/svg%3E">
+   <label for="memberAvatarFile" class="btn secondary">Зураг солих</label>
+   <input id="memberAvatarFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+   <small class="muted">JPG, PNG эсвэл WebP · 2 MB хүртэл</small>
+   <div id="avatarStatus" class="muted" role="status"></div>
+  </div>
+  <form id="memberProfileForm" class="profile-form">
+   <div class="row"><div><label>Овог, нэр</label><input id="memberProfileName" readonly></div><div><label>Нэвтрэх и-мэйл</label><input id="memberProfileEmail" type="email" readonly></div></div>
+   <div class="row"><div><label for="memberProfilePhone">Утасны дугаар</label><input id="memberProfilePhone" type="tel" maxlength="40" placeholder="Жишээ: 99112233"></div><div><label for="memberProfileSchool">Сургууль / байгууллага</label><input id="memberProfileSchool" maxlength="180" placeholder="Сургууль, байгууллагын нэр"></div></div>
+   <div class="row"><div><label for="memberProfileGrade">Анги / дамжаа</label><input id="memberProfileGrade" maxlength="60" placeholder="Жишээ: 12-р анги, 1-р дамжаа"></div><div><label for="memberProfileClass">Бүлэг / анги</label><input id="memberProfileClass" maxlength="60" placeholder="Жишээ: 12Б"></div></div>
+   <div class="row"><div><label for="memberProfileCity">Хот / аймаг</label><input id="memberProfileCity" maxlength="100"></div><div><label for="memberProfileDistrict">Дүүрэг / сум</label><input id="memberProfileDistrict" maxlength="100"></div></div>
+   <label for="memberProfileBio">Өөрийн тухай</label><textarea id="memberProfileBio" maxlength="1000" placeholder="Өөрийгөө товч танилцуулна уу."></textarea>
+   <label for="memberProfileInterests">Сонирхол</label><textarea id="memberProfileInterests" maxlength="500" placeholder="Таны сонирхдог чиглэлүүд"></textarea>
+   <label for="memberProfileSkills">Ур чадвар</label><textarea id="memberProfileSkills" maxlength="500" placeholder="Таны эзэмшсэн ур чадвар, давуу тал"></textarea>
+   <button class="btn gold" id="memberProfileSave" type="submit">Мэдээлэл хадгалах</button>
+   <div id="memberProfileStatus" class="status" role="status">Профайлын мэдээллээ бөглөөд хадгална уу.</div>
+   <p class="muted">Нууц үг, банкны мэдээлэл, гэрийн нарийн хаяг зэрэг эмзэг мэдээллийг энд бүү оруулаарай. И-мэйл хаяг нь нэвтрэх бүртгэлтэй холбоотой тул эндээс өөрчлөгдөхгүй.</p>
+  </form>
+ </div>
+</section>
 <section class="box" id="calendarArea"><div class="section-title-row"><div><span class="eyebrow">ОРОЛЦОО</span><h2>Үйл ажиллагааны календарь</h2><p class="muted">Удахгүй болох сургалт, уулзалт, арга хэмжээг хараад бүртгүүлээрэй.</p></div><div class="calendar-controls"><button type="button" class="btn secondary" id="calendarPrev" aria-label="Өмнөх сар">‹</button><b id="calendarMonth">Календарь</b><button type="button" class="btn secondary" id="calendarNext" aria-label="Дараагийн сар">›</button></div></div><div id="events" class="event-calendar muted">Арга хэмжээ ачаалж байна.</div></section>
 <section class="box" id="learningArea"><div class="section-title-row"><div><span class="eyebrow">ӨӨРИЙГӨӨ ХӨГЖҮҮЛЬЕ</span><h2>Сургалтын төв</h2><p class="muted">Өөрийн хурдаар суралцаж, дуусгасан хичээлээ тэмдэглээрэй.</p></div></div><div id="learningCourses" class="learning-grid muted">Сургалтууд ачаалж байна.</div></section>
 <section class="box" id="announcementArea"><h2>Гишүүдэд зориулсан зарлал</h2><div id="announcements" class="muted">Баталгаажсан гишүүд зарлалыг үзнэ.</div></section>
@@ -511,8 +547,54 @@ $("authForm").onsubmit=async e=>{e.preventDefault();$("authSubmit").disabled=tru
 $("forgotPassword").onclick=async()=>{const email=$("email").value.trim();if(!email){msg("Нууц үг сэргээх и-мэйл хаягаа эхлээд оруулна уу.",true);$("email").focus();return}const b=$("forgotPassword");b.disabled=true;try{const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;msg("Нууц үг сэргээх холбоосыг таны и-мэйл рүү илгээлээ. Ирсэн захидлын холбоосыг нээгээд шинэ нууц үгээ тохируулна уу.")}catch(err){msg(err.message||"Сэргээх хүсэлт илгээж чадсангүй.",true)}finally{b.disabled=false}};
 $("recoveryForm").onsubmit=async e=>{e.preventDefault();const password=$("newPassword").value;if(password.length<8){msg("Нууц үг 8-аас доошгүй тэмдэгт байх ёстой.",true);return}const {error}=await db.auth.updateUser({password});if(error){msg(error.message,true);return}$("recoveryForm").classList.add("hidden");$("authForm").classList.remove("hidden");$("forgotPassword").classList.remove("hidden");msg("Нууц үг амжилттай шинэчлэгдлээ. Шинэ нууц үгээрээ нэвтэрнэ үү.")};
 $("logout").onclick=async()=>{await db.auth.signOut();location.reload()};
+let memberAvatarUrl="";
+async function loadMemberProfile(){
+ if(!user)return;
+ $("memberProfileName").value=profile?.full_name||"";
+ $("memberProfileEmail").value=user.email||"";
+ const {data,error}=await db.from("member_private_profiles").select("phone,school,grade,class_name,city,district,bio,interests,skills,avatar_url").eq("user_id",user.id).maybeSingle();
+ if(error){$("memberProfileStatus").textContent="Профайлын мэдээлэл уншиж чадсангүй: "+error.message;return}
+ const p=data||{};
+ $("memberProfilePhone").value=p.phone||"";
+ $("memberProfileSchool").value=p.school||"";
+ $("memberProfileGrade").value=p.grade||"";
+ $("memberProfileClass").value=p.class_name||"";
+ $("memberProfileCity").value=p.city||"";
+ $("memberProfileDistrict").value=p.district||"";
+ $("memberProfileBio").value=p.bio||"";
+ $("memberProfileInterests").value=p.interests||"";
+ $("memberProfileSkills").value=p.skills||"";
+ memberAvatarUrl=p.avatar_url||"";
+ $("memberProfileAvatar").src=memberAvatarUrl||$("memberProfileAvatar").dataset.placeholder||$("memberProfileAvatar").src;
+ $("memberProfileStatus").textContent="Таны хувийн мэдээлэл ачааллаа.";
+}
+$("memberProfileForm").onsubmit=async e=>{
+ e.preventDefault();if(!user)return;
+ const b=$("memberProfileSave");b.disabled=true;
+ const values={user_id:user.id,phone:$("memberProfilePhone").value.trim(),school:$("memberProfileSchool").value.trim(),grade:$("memberProfileGrade").value.trim(),class_name:$("memberProfileClass").value.trim(),city:$("memberProfileCity").value.trim(),district:$("memberProfileDistrict").value.trim(),bio:$("memberProfileBio").value.trim(),interests:$("memberProfileInterests").value.trim(),skills:$("memberProfileSkills").value.trim(),avatar_url:memberAvatarUrl||null,updated_at:new Date().toISOString()};
+ try{const {error}=await db.from("member_private_profiles").upsert(values,{onConflict:"user_id"});if(error)throw error;$("memberProfileStatus").textContent="Профайлын мэдээлэл амжилттай хадгалагдлаа.";$("memberProfileStatus").className="status good"}catch(err){$("memberProfileStatus").textContent="Хадгалж чадсангүй: "+(err.message||"Алдаа");$("memberProfileStatus").className="status bad"}finally{b.disabled=false}
+};
+$("memberAvatarFile").onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ const status=$("avatarStatus");status.textContent="Зураг байршуулж байна…";
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)){status.textContent="Зөвхөн JPG, PNG, WebP зураг сонгоно уу.";e.target.value="";return}
+ if(file.size>2*1024*1024){status.textContent="Зургийн хэмжээ 2 MB-аас хэтэрч болохгүй.";e.target.value="";return}
+ const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";
+ const path="member-avatars/"+user.id+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
+ try{
+  const {error:uploadError}=await db.storage.from("site-assets").upload(path,file,{contentType:file.type,cacheControl:"3600",upsert:false});
+  if(uploadError)throw uploadError;
+  const {data}=db.storage.from("site-assets").getPublicUrl(path);
+  const url=data.publicUrl;
+  const {error:saveError}=await db.from("member_private_profiles").upsert({user_id:user.id,avatar_url:url,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+  if(saveError)throw saveError;
+  memberAvatarUrl=url;$("memberProfileAvatar").src=url;status.textContent="Профайл зураг шинэчлэгдлээ.";
+ }catch(err){status.textContent="Зураг байршуулж чадсангүй: "+(err.message||"Алдаа")}
+ e.target.value="";
+};
 async function refresh(){const {data:{user:u}}=await db.auth.getUser();user=u;$("logout").classList.toggle("hidden",!user);$("authForm").classList.toggle("hidden",!!user);if(!user){profile=null;setDashboardCounts();$("dashboardGreeting").textContent="Тавтай морилно уу";$("profileStatus").textContent="Нэвтэрсний дараа таны гишүүний төлөв харагдана.";$("learningCourses").textContent="Сургалтыг үзэхийн тулд гишүүнээр нэвтэрнэ үү.";$("adminNav").classList.add("hidden");["announcements","polls","googleForms","events"].forEach(id=>$(id).textContent="Энэ хэсгийг үзэхийн тулд нэвтэрнэ үү.");$("adminPanel").classList.add("hidden");return}
 const {data:p,error}=await db.from("profiles").select("id,full_name,member_code,role,membership_status,created_at").eq("id",user.id).maybeSingle();if(error){$("profileStatus").textContent=error.message;return}profile=p;
+await loadMemberProfile();
 $("profileStatus").innerHTML="<b>"+esc(p?.full_name||user.email)+"</b><br>Гишүүний код: "+esc(p?.member_code||"Олгогдоогүй")+"<br>Төлөв: "+esc(statusText[p?.membership_status]||"Хүлээгдэж байна");
 const approved=p?.membership_status==="approved",admin=approved&&p?.role==="admin";$("adminPanel").classList.toggle("hidden",!admin);$("adminNav").classList.toggle("hidden",!admin);
 if(!approved){["announcements","polls","googleForms"].forEach(id=>$(id).textContent="Энэ хэсэг зөвхөн баталгаажсан гишүүдэд нээлттэй.");}
@@ -1003,8 +1085,8 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
 <script id="member-portal-navigation">
 (function(){
  const root=document.getElementById('memberArea');if(!root||root.dataset.portalNavReady)return;root.dataset.portalNavReady='1';
- const ids=['dashboardArea','calendarArea','learningArea','announcementArea','pollArea','formsArea','communityArea','memberChatArea'];
- const labels=['Миний самбар','Календарь','Сургалт','Зарлал','Санал асуулга','Маягт','Тайлан','Мессеж'];
+ const ids=['dashboardArea','memberProfileArea','calendarArea','learningArea','announcementArea','pollArea','formsArea','communityArea','memberChatArea'];
+ const labels=['Миний самбар','Миний профайл','Календарь','Сургалт','Зарлал','Санал асуулга','Маягт','Тайлан','Мессеж'];
  const nav=document.createElement('nav');nav.className='portal-nav';nav.setAttribute('aria-label','Гишүүдийн хэсгүүд');
  ids.forEach((id,i)=>{const b=document.createElement('button');b.type='button';b.textContent=labels[i];b.dataset.target=id;b.addEventListener('click',()=>show(id));nav.append(b)});
  const first=document.getElementById(ids[0]);if(first)root.insertBefore(nav,first);
