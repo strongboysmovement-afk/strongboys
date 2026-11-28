@@ -548,6 +548,7 @@ $("forgotPassword").onclick=async()=>{const email=$("email").value.trim();if(!em
 $("recoveryForm").onsubmit=async e=>{e.preventDefault();const password=$("newPassword").value;if(password.length<8){msg("Нууц үг 8-аас доошгүй тэмдэгт байх ёстой.",true);return}const {error}=await db.auth.updateUser({password});if(error){msg(error.message,true);return}$("recoveryForm").classList.add("hidden");$("authForm").classList.remove("hidden");$("forgotPassword").classList.remove("hidden");msg("Нууц үг амжилттай шинэчлэгдлээ. Шинэ нууц үгээрээ нэвтэрнэ үү.")};
 $("logout").onclick=async()=>{await db.auth.signOut();location.reload()};
 let memberAvatarUrl="";
+const defaultMemberAvatar=$("memberProfileAvatar").src;
 async function loadMemberProfile(){
  if(!user)return;
  $("memberProfileName").value=profile?.full_name||"";
@@ -565,7 +566,7 @@ async function loadMemberProfile(){
  $("memberProfileInterests").value=p.interests||"";
  $("memberProfileSkills").value=p.skills||"";
  memberAvatarUrl=p.avatar_url||"";
- $("memberProfileAvatar").src=memberAvatarUrl||$("memberProfileAvatar").dataset.placeholder||$("memberProfileAvatar").src;
+ $("memberProfileAvatar").src=memberAvatarUrl||defaultMemberAvatar;
  $("memberProfileStatus").textContent="Таны хувийн мэдээлэл ачааллаа.";
 }
 $("memberProfileForm").onsubmit=async e=>{
