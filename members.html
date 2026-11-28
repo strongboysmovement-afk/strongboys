@@ -874,9 +874,8 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){$("authForm"
  move('memberList','members');
  move('pollForm','polls');move('googleFormForm','forms');move('eventForm','events');
  move('courseForm','learning');move('lessonForm','learning');move('adminCourseList','learning');
- const overview=document.createElement('section');overview.className='admin-page active';overview.dataset.page='home';overview.id='admin-page-home';
+ const overview=pagesById.home.page;overview.className='admin-page';overview.hidden=false;
  overview.innerHTML='<div class="admin-overview-intro"><div><div class="admin-kicker">WORKSPACE</div><h3>Тавтай морилно уу</h3><p>Удирдах үйлдлээ сонгоно уу. Цэс бүр тусдаа ажлын цонх нээнэ.</p></div></div><div class="admin-quick-grid">'+pages.slice(1).map(p=>'<button type="button" class="admin-quick-card" data-open="'+p.id+'"><span>'+p.icon+'</span><b>'+p.label+'</b><small>'+p.hint+'</small><i>Нээх →</i></button>').join('')+'</div>';
- workspace.insertBefore(overview,workspace.firstChild);
  overview.querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>openPage(btn.dataset.open)));
  panel.replaceChildren(header,layout);
  if(intro){intro.className='status good admin-welcome-status';intro.textContent='Системийн админ эрхээр нэвтэрсэн байна.';panel.insertBefore(intro,layout);}
